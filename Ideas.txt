@@ -1,1 +1,3 @@
 Use pagination on the items list
+Abstract mongodb away as much as possible (something like a dbcontext)
+Add tests project
