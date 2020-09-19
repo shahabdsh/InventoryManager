@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <RootNamespace>DankBookstore.Angular</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="inventory-manager-frontend\src\app\services" />
+    </ItemGroup>
+
+</Project>

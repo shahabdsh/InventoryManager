@@ -1,0 +1,20 @@
+<div class="card mb-4 box-shadow">
+  <div class="card-body">
+    <h5 class="card-title">{{item.id}}</h5>
+    <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
+    <form [formGroup]="itemForm">
+      <label>
+        Name:
+        <input type="text" formControlName="name">
+      </label>
+      <label>
+        Price:
+        <input type="text" formControlName="type">
+      </label>
+      <label>
+        Category:
+        <input type="number" formControlName="quantity">
+      </label>
+    </form>
+  </div>
+</div>
