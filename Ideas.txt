@@ -1,3 +1,10 @@
+Adding new item
+Deleting item
+Add schema editor where you can make item types so forms can be auto-created
+Item type can be selected from dropdown ("type" on item becomes a schema ID rather than a string)
+
 Use pagination on the items list
 Abstract mongodb away as much as possible (something like a dbcontext)
 Add tests project
+
+Add readme for running locally
