@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemsService } from "../../services/items.service";
-import {Observable} from "rxjs";
-import {Item} from "../../models/item";
+import { ItemService } from '../../services/item.service';
+import {Observable} from 'rxjs';
+import {Item} from '../../models/item';
 
 @Component({
   selector: 'app-all-items',
@@ -12,7 +12,7 @@ export class AllItemsComponent implements OnInit {
 
   items: Observable<Item[]>;
 
-  constructor(private itemsService: ItemsService) { }
+  constructor(private itemsService: ItemService) { }
 
   ngOnInit(): void {
     this.items = this.itemsService.getAllItems();

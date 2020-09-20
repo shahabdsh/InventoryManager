@@ -1,0 +1,9 @@
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div *ngFor="let schema of schemas | async" class="col-md-4">
+        <app-item-schema-card [schema]="schema"></app-item-schema-card>
+      </div>
+    </div>
+  </div>
+</div>

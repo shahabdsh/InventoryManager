@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 
 namespace InventoryManager.Api
@@ -46,12 +47,22 @@ namespace InventoryManager.Api
                 Configuration.GetSection(nameof(InventoryDatabaseSettings)));
             
             services.AddSingleton<IItemService, ItemService>();
+            services.AddSingleton<IItemSchemaService, ItemSchemaService>();
             
             BsonClassMap.RegisterClassMap<Item>(cm => {
                 cm.AutoMap();
-                cm.MapIdMember(c => c.Id);
-                cm.IdMemberMap.SetSerializer(new StringSerializer(BsonType.ObjectId));
+                cm.MapIdMember(c => c.Id)
+                    .SetIdGenerator(StringObjectIdGenerator.Instance)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
                 cm.MapExtraElementsMember(c => c.Properties);
+            });
+            
+            BsonClassMap.RegisterClassMap<ItemSchema>(cm => {
+                cm.AutoMap();
+                cm.MapIdMember(c => c.Id)
+                    .SetIdGenerator(StringObjectIdGenerator.Instance)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                cm.SetIgnoreExtraElements(true);
             });
 
             services.AddControllers();

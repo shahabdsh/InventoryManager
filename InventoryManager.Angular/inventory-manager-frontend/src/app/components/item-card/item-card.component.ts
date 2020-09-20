@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Item} from "../../models/item";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import { ItemsService } from "../../services/items.service";
-import {debounceTime} from "rxjs/operators";
+import {Item} from '../../models/item';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import { ItemService } from '../../services/item.service';
+import {debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-item-card',
@@ -14,7 +14,7 @@ export class ItemCardComponent implements OnInit {
   @Input() item: Item;
   itemForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private itemsService: ItemsService) { }
+  constructor(private fb: FormBuilder, private itemsService: ItemService) { }
 
   ngOnInit(): void {
 
@@ -28,7 +28,7 @@ export class ItemCardComponent implements OnInit {
       .pipe(debounceTime(1000))
       .subscribe(_ => {
 
-        let obj = new Item(this.itemForm.value) as any;
+        const obj = new Item(this.itemForm.value) as any;
         obj.id = this.item.id;
 
         this.itemsService.updateItem(this.item.id, obj).subscribe();

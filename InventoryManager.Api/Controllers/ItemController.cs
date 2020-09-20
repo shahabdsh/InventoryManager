@@ -36,9 +36,9 @@ namespace InventoryManager.Api.Controllers
         [HttpPost]
         public ActionResult<Item> Create(Item item)
         {
-            _itemService.Create(item);
+            var created = _itemService.Create(item);
 
-            return CreatedAtRoute("GetItem", new { id = item.Id.ToString() }, item);
+            return CreatedAtRoute("GetItem", new { id = created.Id.ToString() }, item);
         }
 
         [HttpPut("{id:length(24)}")]

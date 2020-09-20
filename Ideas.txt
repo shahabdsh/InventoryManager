@@ -4,7 +4,9 @@ Add schema editor where you can make item types so forms can be auto-created
 Item type can be selected from dropdown ("type" on item becomes a schema ID rather than a string)
 
 Use pagination on the items list
+Use DTOs in controllers instead of models
 Abstract mongodb away as much as possible (something like a dbcontext)
 Add tests project
+The two controllers for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.
 
 Add readme for running locally

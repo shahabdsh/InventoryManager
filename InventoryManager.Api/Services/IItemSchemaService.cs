@@ -7,7 +7,7 @@ namespace InventoryManager.Api.Services
     {
         List<ItemSchema> Get();
         ItemSchema Get(string id);
-        ItemSchema Create(ItemSchema item);
+        ItemSchema Create(ItemSchema itemSchema);
         void Update(string id, ItemSchema itemSchemaIn);
         void Remove(ItemSchema itemSchemaIn);
         void Remove(string id);
