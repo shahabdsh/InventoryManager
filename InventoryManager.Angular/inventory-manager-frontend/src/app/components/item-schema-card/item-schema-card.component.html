@@ -1,29 +1,39 @@
 <div class="card mb-4 box-shadow">
   <div class="card-body">
-    <h5 class="card-title">{{schema.id}}</h5>
+    <h5 class="card-title text-muted">{{schema.id}}</h5>
     <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
     <form [formGroup]="schemaForm">
-      <div class="form-row">
-        <label>
-          Name:
-          <input type="text" formControlName="name">
-        </label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+        </div>
+        <input type="text" class="form-control" aria-label="Default"
+               aria-describedby="inputGroup-sizing-default" formControlName="name">
       </div>
       <ng-container formArrayName="properties">
         <ng-container *ngFor="let property of properties.controls; let i=index">
           <div [formGroupName]="i" class="form-row">
-              <div class="col-sm-5">
+              <div class="col-5">
                 <input type="text" class="form-control" formControlName="name" placeholder="Name">
               </div>
-              <div class="col-sm-5">
-                <input type="text" class="form-control" formControlName="type" placeholder="Type">
+              <div class="col-5">
+                <select class="form-control" formControlName="type">
+                  <option *ngFor="let type of itemPropertyTypes" [value]="type.value">{{type.label}}</option>
+                </select>
               </div>
-              <div class="col-sm-1">
+              <div class="col">
                 <button class="btn btn-danger" type="button"><i class="far fa-trash-alt"></i></button>
               </div>
           </div>
         </ng-container>
       </ng-container>
+      <div class="row mt-2">
+        <div class="col">
+          <button class="btn btn-block btn-primary">
+            <i class="fas fa-plus-circle"></i>
+          </button>
+        </div>
+      </div>
     </form>
   </div>
 </div>

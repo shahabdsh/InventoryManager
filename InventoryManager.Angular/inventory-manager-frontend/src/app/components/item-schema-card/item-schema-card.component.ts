@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ItemSchema} from '../../models/item-schema';
+import {ItemSchema, ItemSchemaPropertyType} from '../../models/item-schema';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
@@ -11,6 +11,12 @@ export class ItemSchemaCardComponent implements OnInit {
 
   @Input() schema: ItemSchema;
   schemaForm: FormGroup;
+
+  // Todo: Automatically init this.
+  itemPropertyTypes = [
+    { label: 'Text', value: ItemSchemaPropertyType.Text },
+    { label: 'Number', value: ItemSchemaPropertyType.Number },
+  ];
 
   constructor(private fb: FormBuilder) { }
 
@@ -31,5 +37,9 @@ export class ItemSchemaCardComponent implements OnInit {
 
   get properties(): FormArray {
     return this.schemaForm.get('properties') as FormArray;
+  }
+
+  getTypeLabel (typeValue) {
+    return this.itemPropertyTypes.find(prop => prop.value === typeValue).label;
   }
 }
