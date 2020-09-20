@@ -1,0 +1,29 @@
+<div class="card mb-4 box-shadow">
+  <div class="card-body">
+    <h5 class="card-title">{{schema.id}}</h5>
+    <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
+    <form [formGroup]="schemaForm">
+      <div class="form-row">
+        <label>
+          Name:
+          <input type="text" formControlName="name">
+        </label>
+      </div>
+      <ng-container formArrayName="properties">
+        <ng-container *ngFor="let property of properties.controls; let i=index">
+          <div [formGroupName]="i" class="form-row">
+              <div class="col-sm-5">
+                <input type="text" class="form-control" formControlName="name" placeholder="Name">
+              </div>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" formControlName="type" placeholder="Type">
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-danger" type="button"><i class="far fa-trash-alt"></i></button>
+              </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </form>
+  </div>
+</div>
