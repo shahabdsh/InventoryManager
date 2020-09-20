@@ -20,17 +20,17 @@ namespace InventoryManager.Api.Controllers
         public ActionResult<List<Item>> Get() =>
             _itemService.Get();
 
-        [HttpGet("{id:length(24)}", Name = "GetBook")]
+        [HttpGet("{id:length(24)}", Name = "GetItem")]
         public ActionResult<Item> Get(string id)
         {
-            var book = _itemService.Get(id);
+            var item = _itemService.Get(id);
 
-            if (book == null)
+            if (item == null)
             {
                 return NotFound();
             }
 
-            return book;
+            return item;
         }
 
         [HttpPost]
@@ -38,15 +38,15 @@ namespace InventoryManager.Api.Controllers
         {
             _itemService.Create(item);
 
-            return CreatedAtRoute("GetBook", new { id = item.Id.ToString() }, item);
+            return CreatedAtRoute("GetItem", new { id = item.Id.ToString() }, item);
         }
 
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, Item itemIn)
         {
-            var book = _itemService.Get(id);
+            var item = _itemService.Get(id);
 
-            if (book == null)
+            if (item == null)
             {
                 return NotFound();
             }
@@ -59,14 +59,14 @@ namespace InventoryManager.Api.Controllers
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
-            var book = _itemService.Get(id);
+            var item = _itemService.Get(id);
 
-            if (book == null)
+            if (item == null)
             {
                 return NotFound();
             }
 
-            _itemService.Remove(book.Id);
+            _itemService.Remove(item.Id);
 
             return NoContent();
         }

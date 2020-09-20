@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "DankBookstore.Api": {
+    "InventoryManager.Api": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/item",

@@ -8,5 +8,5 @@ export class Item {
   name: string;
   type: string;
   quantity: number;
-  extraProperties;
+  properties;
 }

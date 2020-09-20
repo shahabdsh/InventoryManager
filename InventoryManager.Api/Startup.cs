@@ -51,7 +51,7 @@ namespace InventoryManager.Api
                 cm.AutoMap();
                 cm.MapIdMember(c => c.Id);
                 cm.IdMemberMap.SetSerializer(new StringSerializer(BsonType.ObjectId));
-                cm.MapExtraElementsMember(c => c.ExtraProperties);
+                cm.MapExtraElementsMember(c => c.Properties);
             });
 
             services.AddControllers();

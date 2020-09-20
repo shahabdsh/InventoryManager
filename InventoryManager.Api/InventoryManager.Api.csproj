@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
-        <RootNamespace>DankBookstore.Api</RootNamespace>
+        <RootNamespace>InventoryManager.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
