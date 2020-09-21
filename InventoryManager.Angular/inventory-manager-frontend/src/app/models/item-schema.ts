@@ -2,6 +2,10 @@ export class ItemSchema {
   id: string;
   name: string;
   properties: ItemSchemaProperty[];
+
+  public constructor(init?: Partial<ItemSchema>) {
+    Object.assign(this, init);
+  }
 }
 
 export class ItemSchemaProperty {

@@ -2,7 +2,7 @@
   <div class="card-body">
     <h5 class="card-title text-muted">{{schema.id}}</h5>
     <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
-    <form [formGroup]="schemaForm">
+    <form [formGroup]="schemaForm" (ngSubmit)="save()">
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
@@ -12,9 +12,10 @@
       </div>
       <ng-container formArrayName="properties">
         <ng-container *ngFor="let property of properties.controls; let i=index">
-          <div [formGroupName]="i" class="form-row">
+          <div [formGroupName]="i" class="form-row mt-2">
               <div class="col-5">
-                <input type="text" class="form-control" formControlName="name" placeholder="Name">
+                <input type="text" class="form-control" formControlName="name" placeholder="Field Name"
+                       [ngClass]="{'is-invalid': !property.get('name').valid }">
               </div>
               <div class="col-5">
                 <select class="form-control" formControlName="type">
@@ -22,15 +23,22 @@
                 </select>
               </div>
               <div class="col">
-                <button class="btn btn-danger" type="button"><i class="far fa-trash-alt"></i></button>
+                <button (click)="removeProperty(i)" type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
               </div>
           </div>
         </ng-container>
       </ng-container>
       <div class="row mt-2">
         <div class="col">
-          <button class="btn btn-block btn-primary">
+          <button (click)="addNewPropertyToForm()" type="button" class="btn btn-block btn-primary">
             <i class="fas fa-plus-circle"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col">
+          <button [disabled]="!changed" type="submit" class="btn btn-block btn-success">
+            <i class="far fa-save"></i>
           </button>
         </div>
       </div>

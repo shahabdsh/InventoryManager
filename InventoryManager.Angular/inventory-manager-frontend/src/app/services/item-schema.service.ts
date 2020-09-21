@@ -9,7 +9,7 @@ import {ItemSchema} from '../models/item-schema';
 })
 export class ItemSchemaService {
 
-  itemSchemasUrl = 'https://localhost:5001/api/itemschema ';
+  itemSchemasUrl = 'https://localhost:5001/api/itemschema';
 
   constructor(private httpClient: HttpClient) { }
 
