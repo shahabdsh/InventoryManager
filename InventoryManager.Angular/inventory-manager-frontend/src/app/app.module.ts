@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ItemSchemasComponent } from './pages/item-schemas/item-schemas.component';
 import { ItemSchemaCardComponent } from './components/item-schema-card/item-schema-card.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     NgbModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

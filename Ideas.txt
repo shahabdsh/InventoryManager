@@ -1,7 +1,11 @@
+Use DTOs in the rest of Item class and use AutoMapper
+
 Adding new item
 Deleting item
 Add schema editor where you can make item types so forms can be auto-created
 Item type can be selected from dropdown ("type" on item becomes a schema ID rather than a string)
+Login and authentication system
+Location system (each location has separate inventory)
 
 Use pagination on the items list
 Use DTOs in controllers instead of models

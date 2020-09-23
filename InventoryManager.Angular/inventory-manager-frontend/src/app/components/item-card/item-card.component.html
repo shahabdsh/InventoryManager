@@ -1,6 +1,5 @@
 <div class="card mb-4 box-shadow">
   <div class="card-body">
-    <h5 class="card-title text-muted">{{item.id}}</h5>
     <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
     <form [formGroup]="itemForm">
       <div class="input-group mb-3">
@@ -19,8 +18,20 @@
         <div class="input-group-prepend">
           <span class="input-group-text">Quantity</span>
         </div>
-        <input type="text" class="form-control" formControlName="quantity">
+        <input type="number" class="form-control" formControlName="quantity">
       </div>
+      <ng-container *ngIf="schema">
+        <div *ngFor="let property of schema.properties" formGroupName="properties" class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">{{property.name}}</span>
+          </div>
+          <input [type]="property.type" class="form-control" formControlName="{{property.name}}">
+        </div>
+      </ng-container>
     </form>
+    <small class="text-muted">ID: {{item.id}}</small>
+  </div>
+  <div class="card-footer">
+    <small *ngIf="responseMessage" class="text-muted">{{responseMessage}}</small>
   </div>
 </div>

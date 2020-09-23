@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -34,24 +36,42 @@ namespace InventoryManager.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Item> Create(Item item)
+        public ActionResult<Item> Create(ItemDto itemDto)
         {
+            var item = new Item
+            {
+                Id = itemDto.Id,
+                Name = itemDto.Name,
+                Type = itemDto.Type,
+                Quantity = itemDto.Quantity,
+                Properties = (Dictionary<string, object>)itemDto.Properties
+            };
+            
             var created = _itemService.Create(item);
 
             return CreatedAtRoute("GetItem", new { id = created.Id.ToString() }, item);
         }
 
         [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Item itemIn)
+        public IActionResult Update(string id, ItemDto itemDto)
         {
-            var item = _itemService.Get(id);
+            var existing = _itemService.Get(id);
 
-            if (item == null)
+            if (existing == null)
             {
                 return NotFound();
             }
+            
+            var item = new Item
+            {
+                Id = itemDto.Id,
+                Name = itemDto.Name,
+                Type = itemDto.Type,
+                Quantity = itemDto.Quantity,
+                Properties = (Dictionary<string, object>)itemDto.Properties
+            };
 
-            _itemService.Update(id, itemIn);
+            _itemService.Update(id, item);
 
             return NoContent();
         }
@@ -69,6 +89,11 @@ namespace InventoryManager.Api.Controllers
             _itemService.Remove(item.Id);
 
             return NoContent();
+        }
+
+        private Dictionary<string, object> ConvertDict(Dictionary<string, string> input)
+        {
+            
         }
     }
 }

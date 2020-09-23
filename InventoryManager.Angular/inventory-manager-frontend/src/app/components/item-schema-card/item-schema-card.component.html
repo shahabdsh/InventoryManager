@@ -1,9 +1,8 @@
 <div class="card mb-4 box-shadow">
   <div class="card-body">
-    <h5 class="card-title text-muted">{{schema.id}}</h5>
     <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
     <form [formGroup]="schemaForm" (ngSubmit)="save()">
-      <div class="input-group mb-3">
+      <div class="input-group input-group-lg mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
         </div>
@@ -19,7 +18,7 @@
               </div>
               <div class="col-5">
                 <select class="form-control" formControlName="type">
-                  <option *ngFor="let type of itemPropertyTypes" [value]="type.value">{{type.label}}</option>
+                  <option *ngFor="let type of itemPropertyTypes" [ngValue]="type.value">{{type.label}}</option>
                 </select>
               </div>
               <div class="col">
@@ -43,5 +42,9 @@
         </div>
       </div>
     </form>
+    <small class="text-muted">ID: {{schema.id}}</small>
+  </div>
+  <div class="card-footer">
+    <small *ngIf="responseMessage" class="text-muted">{{responseMessage}}</small>
   </div>
 </div>

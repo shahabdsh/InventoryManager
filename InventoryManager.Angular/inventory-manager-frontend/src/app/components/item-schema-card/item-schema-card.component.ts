@@ -3,6 +3,7 @@ import {ItemSchema, ItemSchemaPropertyType} from '../../models/item-schema';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ItemSchemaService} from '../../services/item-schema.service';
 import {Item} from '../../models/item';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-item-schema-card',
@@ -16,13 +17,15 @@ export class ItemSchemaCardComponent implements OnInit {
 
   changed: boolean;
 
+  responseMessage: string;
+
   // Todo: Automatically init this.
   itemPropertyTypes = [
     { label: 'Text', value: ItemSchemaPropertyType.Text },
     { label: 'Number', value: ItemSchemaPropertyType.Number },
   ];
 
-  constructor(private fb: FormBuilder, private itemSchemaService: ItemSchemaService) { }
+  constructor(private fb: FormBuilder, private itemSchemaService: ItemSchemaService, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
 
@@ -79,7 +82,12 @@ export class ItemSchemaCardComponent implements OnInit {
 
     console.log(this.schemaForm.value);
 
-    this.itemSchemaService.update(this.schema.id, obj).subscribe();
+    this.itemSchemaService.update(this.schema.id, obj).subscribe(result => {
+      this.responseMessage = `Saved on: ${this.datePipe.transform(new Date(), 'medium')}`;
+    }, error => {
+      this.responseMessage = 'Error saving!';
+      this.changed = true;
+    });
 
     this.changed = false;
   }
