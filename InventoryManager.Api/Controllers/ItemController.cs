@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
@@ -12,18 +13,20 @@ namespace InventoryManager.Api.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
+        private readonly IMapper _mapper;
 
-        public ItemController(IItemService itemService)
+        public ItemController(IItemService itemService, IMapper mapper)
         {
             _itemService = itemService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<List<Item>> Get() =>
-            _itemService.Get();
+        public ActionResult<List<ItemDto>> Get() =>
+            _mapper.Map<List<ItemDto>>(_itemService.Get());
 
         [HttpGet("{id:length(24)}", Name = "GetItem")]
-        public ActionResult<Item> Get(string id)
+        public ActionResult<ItemDto> Get(string id)
         {
             var item = _itemService.Get(id);
 
@@ -32,24 +35,21 @@ namespace InventoryManager.Api.Controllers
                 return NotFound();
             }
 
-            return item;
+            var itemDto = _mapper.Map<ItemDto>(item);
+
+            return itemDto;
         }
 
         [HttpPost]
-        public ActionResult<Item> Create(ItemDto itemDto)
+        public ActionResult<ItemDto> Create(ItemDto itemDto)
         {
-            var item = new Item
-            {
-                Id = itemDto.Id,
-                Name = itemDto.Name,
-                Type = itemDto.Type,
-                Quantity = itemDto.Quantity,
-                Properties = (Dictionary<string, object>)itemDto.Properties
-            };
-            
+            var item = _mapper.Map<Item>(itemDto);
+
             var created = _itemService.Create(item);
 
-            return CreatedAtRoute("GetItem", new { id = created.Id.ToString() }, item);
+            var newItemDto = _mapper.Map<ItemDto>(created);
+
+            return CreatedAtRoute("GetItem", new { id = created.Id.ToString() }, newItemDto);
         }
 
         [HttpPut("{id:length(24)}")]
@@ -61,15 +61,8 @@ namespace InventoryManager.Api.Controllers
             {
                 return NotFound();
             }
-            
-            var item = new Item
-            {
-                Id = itemDto.Id,
-                Name = itemDto.Name,
-                Type = itemDto.Type,
-                Quantity = itemDto.Quantity,
-                Properties = (Dictionary<string, object>)itemDto.Properties
-            };
+
+            var item = _mapper.Map<Item>(itemDto);
 
             _itemService.Update(id, item);
 
@@ -89,11 +82,6 @@ namespace InventoryManager.Api.Controllers
             _itemService.Remove(item.Id);
 
             return NoContent();
-        }
-
-        private Dictionary<string, object> ConvertDict(Dictionary<string, string> input)
-        {
-            
         }
     }
 }

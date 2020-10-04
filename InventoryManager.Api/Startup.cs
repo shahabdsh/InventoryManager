@@ -1,22 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.IdGenerators;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace InventoryManager.Api
 {
@@ -49,21 +38,9 @@ namespace InventoryManager.Api
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IItemSchemaService, ItemSchemaService>();
             
-            BsonClassMap.RegisterClassMap<Item>(cm => {
-                cm.AutoMap();
-                cm.MapIdMember(c => c.Id)
-                    .SetIdGenerator(StringObjectIdGenerator.Instance)
-                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
-                cm.MapExtraElementsMember(c => c.Properties);
-            });
-            
-            BsonClassMap.RegisterClassMap<ItemSchema>(cm => {
-                cm.AutoMap();
-                cm.MapIdMember(c => c.Id)
-                    .SetIdGenerator(StringObjectIdGenerator.Instance)
-                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
-                cm.SetIgnoreExtraElements(true);
-            });
+            BsonClassMaps.Map();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
         }
