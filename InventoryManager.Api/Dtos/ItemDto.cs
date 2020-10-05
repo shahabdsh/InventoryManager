@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using InventoryManager.Api.Models;
 
 namespace InventoryManager.Api.Dtos
 {
-    public class ItemDto
+    public class ItemDto : EntityBase
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public int Quantity { get; set; }

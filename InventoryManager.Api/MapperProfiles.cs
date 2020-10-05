@@ -10,6 +10,9 @@ namespace InventoryManager.Api
         {
             CreateMap<Item, ItemDto>()
                 .ReverseMap();
+
+            CreateMap<ItemSchema, ItemSchemaDto>()
+                .ReverseMap();
         }
     }
 }

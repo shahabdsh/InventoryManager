@@ -1,9 +1,12 @@
-export class ItemSchema {
+import {EntityBase} from "./entity-base";
+
+export class ItemSchema extends EntityBase {
   id: string;
   name: string;
   properties: ItemSchemaProperty[];
 
   public constructor(init?: Partial<ItemSchema>) {
+    super();
     Object.assign(this, init);
   }
 }

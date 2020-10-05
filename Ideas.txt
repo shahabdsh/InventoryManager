@@ -1,14 +1,11 @@
-Use DTOs in the rest of Item class and use AutoMapper
-
-Adding new item
-Deleting item
-Add schema editor where you can make item types so forms can be auto-created
+Adding/deleting items
+Adding/deleting item schemas
 Item type can be selected from dropdown ("type" on item becomes a schema ID rather than a string)
 Login and authentication system
 Location system (each location has separate inventory)
+Merge some of the functionality of item and item schema cards
 
 Use pagination on the items list
-Use DTOs in controllers instead of models
 Abstract mongodb away as much as possible (something like a dbcontext)
 Add tests project
 The two controllers for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.

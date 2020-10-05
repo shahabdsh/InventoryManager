@@ -15,6 +15,10 @@ export class ItemSchemaService {
   allSchemas$: Observable<ItemSchema[]>;
 
   constructor(private httpClient: HttpClient) {
+    this.refreshSchemasCache();
+  }
+
+  refreshSchemasCache () {
     this.allSchemas$ = this.getAll().pipe(
       shareReplay(1)
     );
@@ -25,6 +29,15 @@ export class ItemSchemaService {
   }
 
   update(id: string, itemSchema: ItemSchema) {
-    return this.httpClient.put(`${this.itemSchemasUrl}/${id}`, itemSchema);
+
+    let ob = this.httpClient.put(`${this.itemSchemasUrl}/${id}`, itemSchema).pipe(
+      shareReplay(1)
+    );
+
+    ob.subscribe(() => {
+      this.refreshSchemasCache();
+    });
+
+    return ob;
   }
 }

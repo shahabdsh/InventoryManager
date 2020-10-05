@@ -21,7 +21,7 @@
         <input type="number" class="form-control" formControlName="quantity">
       </div>
       <ng-container *ngIf="schema">
-        <div *ngFor="let property of schema.properties" formGroupName="properties" class="input-group mb-3">
+        <div *ngFor="let property of allProperties" formGroupName="properties" class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text">{{property.name}}</span>
           </div>
@@ -32,6 +32,6 @@
     <small class="text-muted">ID: {{item.id}}</small>
   </div>
   <div class="card-footer">
-    <small *ngIf="responseMessage" class="text-muted">{{responseMessage}}</small>
+    <small class="text-muted">{{footerMessage}}</small>
   </div>
 </div>

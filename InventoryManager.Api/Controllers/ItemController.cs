@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using InventoryManager.Api.Dtos;
@@ -44,6 +45,8 @@ namespace InventoryManager.Api.Controllers
         public ActionResult<ItemDto> Create(ItemDto itemDto)
         {
             var item = _mapper.Map<Item>(itemDto);
+            
+            item.CreatedOn = DateTimeOffset.Now;
 
             var created = _itemService.Create(item);
 
@@ -63,6 +66,8 @@ namespace InventoryManager.Api.Controllers
             }
 
             var item = _mapper.Map<Item>(itemDto);
+            
+            item.UpdatedOn = DateTimeOffset.Now;
 
             _itemService.Update(id, item);
 

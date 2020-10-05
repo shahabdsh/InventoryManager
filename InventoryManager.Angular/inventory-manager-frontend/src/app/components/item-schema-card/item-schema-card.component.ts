@@ -17,7 +17,7 @@ export class ItemSchemaCardComponent implements OnInit {
 
   changed: boolean;
 
-  responseMessage: string;
+  footerMessage: string;
 
   // Todo: Automatically init this.
   itemPropertyTypes = [
@@ -46,6 +46,12 @@ export class ItemSchemaCardComponent implements OnInit {
     });
 
     this.changed = false;
+
+    if (this.schema.updatedOn) {
+      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+    } else if (this.schema.createdOn) {
+      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), 'medium')}`;
+    }
   }
 
   createNewProperty(): FormGroup {
@@ -83,9 +89,9 @@ export class ItemSchemaCardComponent implements OnInit {
     console.log(this.schemaForm.value);
 
     this.itemSchemaService.update(this.schema.id, obj).subscribe(result => {
-      this.responseMessage = `Saved on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
     }, error => {
-      this.responseMessage = 'Error saving!';
+      this.footerMessage = 'Error saving!';
       this.changed = true;
     });
 
