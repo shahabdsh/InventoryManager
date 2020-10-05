@@ -4,6 +4,17 @@
       <div *ngFor="let item of items | async" class="col-md-4">
         <app-item-card [item]="item"></app-item-card>
       </div>
+
+      <div *ngIf="schemas | async" class="col-md-4">
+        <div class="card bg-light mb-4 box-shadow text-center">
+          <div class="card-header">
+            Add an item
+          </div>
+          <div class="card-body" style="max-height: 25em; overflow-y: auto">
+            <button (click)="addItem(schema)" *ngFor="let schema of schemas | async" class="btn btn-primary btn-block">{{schema.name}}</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
