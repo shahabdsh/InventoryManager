@@ -12,6 +12,7 @@ export class ItemSchemaService {
 
   itemSchemasUrl = 'https://localhost:5001/api/itemschema';
 
+  // Todo: Update this when get, update, etc calls are made.
   allSchemas$: Observable<ItemSchema[]>;
 
   constructor(private httpClient: HttpClient) {

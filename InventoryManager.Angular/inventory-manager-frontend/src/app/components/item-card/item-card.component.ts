@@ -18,6 +18,8 @@ export class ItemCardComponent implements OnInit {
   itemForm: FormGroup;
   schema: ItemSchema;
 
+  showConfirmDelete: boolean
+
   footerMessage: string;
 
   allProperties: ItemSchemaProperty[];
@@ -71,6 +73,14 @@ export class ItemCardComponent implements OnInit {
     }
   }
 
+  attemptDelete () {
+    this.showConfirmDelete = true;
+  }
+
+  delete () {
+    this.itemsService.delete(this.item.id).subscribe();
+  }
+
   registerAutosave() {
     this.itemForm.valueChanges
       .pipe(debounceTime(1000))
@@ -79,7 +89,7 @@ export class ItemCardComponent implements OnInit {
         const obj = new Item(this.itemForm.value) as any;
         obj.id = this.item.id;
 
-        this.itemsService.updateItem(this.item.id, obj).subscribe(response => {
+        this.itemsService.update(this.item.id, obj).subscribe(response => {
           this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
         });
       });

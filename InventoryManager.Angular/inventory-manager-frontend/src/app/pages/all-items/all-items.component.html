@@ -1,7 +1,7 @@
 <div class="album py-5 bg-light">
   <div class="container">
     <div class="row">
-      <div *ngFor="let item of items | async" class="col-md-4">
+      <div *ngFor="let item of itemsService.allItems$ | async" class="col-md-4">
         <app-item-card [item]="item"></app-item-card>
       </div>
 

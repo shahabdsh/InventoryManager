@@ -33,5 +33,7 @@
   </div>
   <div class="card-footer">
     <small class="text-muted">{{footerMessage}}</small>
+    <button (click)="attemptDelete()" *ngIf="!showConfirmDelete" type="button" class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+    <button (click)="delete()" *ngIf="showConfirmDelete" type="button" class="btn btn-danger btn-sm float-right">Confirm</button>
   </div>
 </div>

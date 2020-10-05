@@ -1,7 +1,7 @@
 Adding/deleting items
-- The add menu for item simply has a list of schemas
 - Have a google style add button at the bottom right corner of screen
 Adding/deleting item schemas
+- Confirm this with a warning pop up because it is more important
 Use schema id instead of name for item's type
 When a schema is deleted, all of the related items become "untyped" but not deleted
 Item type can be selected from dropdown ("type" on item becomes a schema ID rather than a string)

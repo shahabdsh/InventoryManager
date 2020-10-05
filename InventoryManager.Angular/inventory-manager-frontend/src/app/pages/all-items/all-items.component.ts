@@ -13,30 +13,20 @@ import {take} from "rxjs/operators";
 })
 export class AllItemsComponent implements OnInit {
 
-  items: BehaviorSubject<Item[]>;
   schemas: BehaviorSubject<ItemSchema[]>;
 
-  constructor(private itemsService: ItemService, private itemSchemaService: ItemSchemaService) { }
+  constructor(public itemsService: ItemService, private itemSchemaService: ItemSchemaService) { }
 
   ngOnInit(): void {
 
-    this.items = new BehaviorSubject<Item[]>([]);
     this.schemas = new BehaviorSubject<ItemSchema[]>([]);
 
-    this.itemsService.getAllItems().subscribe(result => {
-      this.items.next(result);
-    });
     this.itemSchemaService.allSchemas$.subscribe(result => {
       this.schemas.next(result);
     });
   }
 
   addItem (schema: ItemSchema) {
-    this.itemsService.createUsingSchema(schema).subscribe(item => {
-      this.items.pipe(take(1)).subscribe(current => {
-        current.push(item);
-        this.items.next(current);
-      })
-    });
+    this.itemsService.createUsingSchema(schema).subscribe();
   }
 }
