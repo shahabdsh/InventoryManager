@@ -1,9 +1,21 @@
 Adding/deleting items
+- The add menu for item simply has a list of schemas
+- Have a google style add button at the bottom right corner of screen
 Adding/deleting item schemas
+Use schema id instead of name for item's type
+When a schema is deleted, all of the related items become "untyped" but not deleted
 Item type can be selected from dropdown ("type" on item becomes a schema ID rather than a string)
 Login and authentication system
 Location system (each location has separate inventory)
 Merge some of the functionality of item and item schema cards
+Searching and filtering items
+- Fuzzy search over all fields
+- Item type filter
+- Specific field filter
+- A range slider can be used for number fields
+Add admin page where the admin can create new stores
+- Creating new stores adds a bunch of template items (hundreds)
+Tip/tutorial system
 
 Use pagination on the items list
 Abstract mongodb away as much as possible (something like a dbcontext)
@@ -11,3 +23,5 @@ Add tests project
 The two controllers for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.
 
 Add readme for running locally
+Add a clear and concise feature list with pictures to read me. Pay attention to UX so it delivers all the info well
+Make better use of bootstrap and make the app mobile friendly
