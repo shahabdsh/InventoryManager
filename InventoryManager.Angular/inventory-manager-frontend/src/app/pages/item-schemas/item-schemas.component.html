@@ -4,6 +4,13 @@
       <div *ngFor="let schema of schemas | async" class="col-md-4">
         <app-item-schema-card [schema]="schema"></app-item-schema-card>
       </div>
+      <div class="col-md-4">
+        <div class="card bg-light mb-4 box-shadow text-center">
+          <button (click)="add()" class="card-body btn" style="line-height: 18em; color: slategrey">
+            <i class="fas fa-plus fa-2x"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -18,4 +18,8 @@ export class ItemSchemasComponent implements OnInit {
   ngOnInit(): void {
     this.schemas = this.itemSchemaService.getAll();
   }
+
+  add () {
+    console.log("ADDING");
+  }
 }
