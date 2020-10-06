@@ -4,6 +4,7 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ItemSchemaService} from '../../services/item-schema.service';
 import {Item} from '../../models/item';
 import {DatePipe} from '@angular/common';
+import {timer} from "rxjs";
 
 @Component({
   selector: 'app-item-schema-card',
@@ -87,7 +88,10 @@ export class ItemSchemaCardComponent implements OnInit {
     obj.id = this.schema.id;
 
     this.itemSchemaService.update(this.schema.id, obj).subscribe(result => {
-      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      this.footerMessage = "Saved!";
+      timer(1500).subscribe(() => {
+        this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      });
     }, error => {
       this.footerMessage = 'Error saving!';
       this.changed = true;

@@ -6,6 +6,7 @@ import {debounceTime} from 'rxjs/operators';
 import {DatePipe} from '@angular/common';
 import {ItemSchemaService} from '../../services/item-schema.service';
 import {ItemSchema, ItemSchemaProperty, ItemSchemaPropertyType} from '../../models/item-schema';
+import {timer} from "rxjs";
 
 @Component({
   selector: 'app-item-card',
@@ -31,7 +32,6 @@ export class ItemCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.itemForm = this.fb.group({
       name: [this.item.name],
       type: {value: this.item.type, disabled: true},
@@ -76,6 +76,10 @@ export class ItemCardComponent implements OnInit {
 
   attemptDelete () {
     this.showConfirmDelete = true;
+
+    timer(2000).subscribe(() => {
+      this.showConfirmDelete = false;
+    });
   }
 
   delete () {
@@ -84,14 +88,17 @@ export class ItemCardComponent implements OnInit {
 
   registerAutosave() {
     this.itemForm.valueChanges
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(600))
       .subscribe(_ => {
 
-        const obj = new Item(this.itemForm.value) as any;
+        const obj = new Item(this.itemForm.getRawValue()) as any;
         obj.id = this.item.id;
 
         this.itemsService.update(this.item.id, obj).subscribe(response => {
-          this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+          this.footerMessage = "Saved!";
+          timer(1500).subscribe(() => {
+            this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+          });
         });
       });
   }

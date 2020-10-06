@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { GenericRepositoryService } from './generic-repository.service';
 
 describe('GenericRepositoryService', () => {
-  let service: GenericRepositoryService;
+  let service: GenericRepositoryService<any>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

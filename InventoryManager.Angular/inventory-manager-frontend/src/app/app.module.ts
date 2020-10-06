@@ -11,6 +11,7 @@ import { ItemSchemasComponent } from './pages/item-schemas/item-schemas.componen
 import { ItemSchemaCardComponent } from './components/item-schema-card/item-schema-card.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatePipe } from '@angular/common';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { DatePipe } from '@angular/common';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
