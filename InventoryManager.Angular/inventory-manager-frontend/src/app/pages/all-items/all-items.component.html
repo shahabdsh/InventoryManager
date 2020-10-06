@@ -12,6 +12,7 @@
           </div>
           <div class="card-body" style="max-height: 25em; overflow-y: auto">
             <button (click)="addItem(schema)" *ngFor="let schema of schemas | async" class="btn btn-primary btn-block">{{schema.name}}</button>
+            <p *ngIf="(schemas | async).length === 0" class="text-muted">Add an item type/schema to create an instance of them here</p>
           </div>
         </div>
       </div>
