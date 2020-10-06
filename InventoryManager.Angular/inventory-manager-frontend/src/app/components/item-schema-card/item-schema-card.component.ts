@@ -86,8 +86,6 @@ export class ItemSchemaCardComponent implements OnInit {
     const obj = new Item(this.schemaForm.value) as any;
     obj.id = this.schema.id;
 
-    console.log(this.schemaForm.value);
-
     this.itemSchemaService.update(this.schema.id, obj).subscribe(result => {
       this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
     }, error => {

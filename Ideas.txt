@@ -1,3 +1,5 @@
+Bug: If fields like "type" or "name" are added to schema, they override the base model fields
+
 Adding/deleting items
 - Have a google style add button at the bottom right corner of screen
 Adding/deleting item schemas
@@ -23,5 +25,8 @@ Add tests project
 The two controllers for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.
 
 Add readme for running locally
-Add a clear and concise feature list with pictures to read me. Pay attention to UX so it delivers all the info well
 Make better use of bootstrap and make the app mobile friendly
+
+Add a clear and concise feature list with pictures to read me. Pay attention to UX so it delivers all the info well
+Show off the following:
+- Generic typescript repository layer

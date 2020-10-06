@@ -1,18 +1,18 @@
 <div class="album py-5 bg-light">
   <div class="container">
     <div class="row">
-      <div *ngFor="let item of itemsService.allItems$ | async" class="col-md-4">
+      <div *ngFor="let item of itemsService.allItems | async" class="col-md-4">
         <app-item-card [item]="item"></app-item-card>
       </div>
 
-      <div *ngIf="schemas | async" class="col-md-4">
+      <div *ngIf="schemas$ | async as schemas" class="col-md-4">
         <div class="card bg-light mb-4 box-shadow text-center">
           <div class="card-header">
             Add an item
           </div>
           <div class="card-body" style="max-height: 25em; overflow-y: auto">
-            <button (click)="addItem(schema)" *ngFor="let schema of schemas | async" class="btn btn-primary btn-block">{{schema.name}}</button>
-            <p *ngIf="(schemas | async).length === 0" class="text-muted">Add an item type/schema to create an instance of them here</p>
+            <button (click)="addItem(schema)" *ngFor="let schema of schemas" class="btn btn-primary btn-block">{{schema.name}}</button>
+            <p *ngIf="schemas.length === 0" class="text-muted">Add an item type/schema to create an instance of them here</p>
           </div>
         </div>
       </div>

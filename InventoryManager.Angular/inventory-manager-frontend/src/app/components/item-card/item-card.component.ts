@@ -34,13 +34,14 @@ export class ItemCardComponent implements OnInit {
 
     this.itemForm = this.fb.group({
       name: [this.item.name],
-      type: [this.item.type],
+      type: {value: this.item.type, disabled: true},
       quantity: [this.item.quantity]
     });
 
     this.allProperties = [];
 
-    this.itemSchemaService.allSchemas$.subscribe(schemas => {
+    this.itemSchemaService.allItemsTakeOne.subscribe(schemas => {
+
       this.schema = schemas.find(s => s.name === this.item.type);
       const config = {};
       this.schema.properties.forEach(property => {

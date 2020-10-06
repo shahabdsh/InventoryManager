@@ -1,44 +1,18 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Item} from '../models/item';
 import {ItemSchema} from '../models/item-schema';
-import {shareReplay} from 'rxjs/operators';
+import {GenericRepositoryService} from "./generic-repository.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ItemSchemaService {
+export class ItemSchemaService extends GenericRepositoryService<ItemSchema> {
 
-  itemSchemasUrl = 'https://localhost:5001/api/itemschema';
-
-  // Todo: Update this when get, update, etc calls are made.
-  allSchemas$: Observable<ItemSchema[]>;
-
-  constructor(private httpClient: HttpClient) {
-    this.refreshSchemasCache();
+  constructor(httpClient: HttpClient) {
+    super(httpClient);
   }
 
-  refreshSchemasCache () {
-    this.allSchemas$ = this.getAll().pipe(
-      shareReplay(1)
-    );
-  }
-
-  getAll(): Observable<ItemSchema[]> {
-    return this.httpClient.get<ItemSchema[]>(this.itemSchemasUrl);
-  }
-
-  update(id: string, itemSchema: ItemSchema) {
-
-    let ob = this.httpClient.put(`${this.itemSchemasUrl}/${id}`, itemSchema).pipe(
-      shareReplay(1)
-    );
-
-    ob.subscribe(() => {
-      this.refreshSchemasCache();
-    });
-
-    return ob;
+  get itemsUrl(): string {
+    return 'https://localhost:5001/api/itemschema';
   }
 }
