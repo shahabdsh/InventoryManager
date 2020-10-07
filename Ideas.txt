@@ -1,10 +1,8 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-Have a google style add button at the bottom right corner of screen
-Adding/deleting item schemas
-- Confirm this with a warning pop up because it is more important
 Use schema id instead of name for item's type
-When a schema is deleted, all of the related items become "untyped" but not deleted
+- When a schema is deleted, all of the related items become "untyped" but not deleted
+Have a google style add button at the bottom right corner of screen
 Login and authentication system
 Location system (each location has separate inventory)
 Merge some of the functionality of item and item schema cards
