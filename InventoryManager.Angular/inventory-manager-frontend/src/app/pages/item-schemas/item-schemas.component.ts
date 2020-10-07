@@ -11,15 +11,34 @@ import {ItemSchema} from '../../models/item-schema';
 })
 export class ItemSchemasComponent implements OnInit {
 
-  schemas: Observable<ItemSchema[]>;
-
   constructor(private itemSchemaService: ItemSchemaService) { }
 
   ngOnInit(): void {
-    this.schemas = this.itemSchemaService.getAll();
+    this.itemSchemaService.getAll().subscribe();
+  }
+
+  get schemas$ () {
+    return this.itemSchemaService.allItems$;
   }
 
   add () {
-    console.log("ADDING");
+
+    let name = "New Schema"
+    this.itemSchemaService.allItemsTakeOne.subscribe(schemas => {
+
+      let number = 1;
+      while (schemas.some(schema => {
+        return schema.name === name;
+      })) {
+        name = "New Schema " + number;
+        number++;
+      }
+    })
+
+    let obj = {
+      name: name, properties: []
+    } as ItemSchema;
+
+    this.itemSchemaService.create(obj).subscribe();
   }
 }

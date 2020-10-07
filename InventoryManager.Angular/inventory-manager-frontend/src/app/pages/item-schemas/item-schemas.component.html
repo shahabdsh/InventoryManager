@@ -1,9 +1,11 @@
 <div class="album py-5 bg-light">
   <div class="container">
     <div class="row">
-      <div *ngFor="let schema of schemas | async" class="col-md-4">
-        <app-item-schema-card [schema]="schema"></app-item-schema-card>
-      </div>
+      <ng-container *ngIf="schemas$ | async as schemas">
+        <div *ngFor="let schema of schemas" class="col-md-4">
+          <app-item-schema-card [schema]="schema"></app-item-schema-card>
+        </div>
+      </ng-container>
       <div class="col-md-4">
         <div class="card bg-light mb-4 box-shadow text-center">
           <button (click)="add()" class="card-body btn" style="line-height: 18em; color: slategrey">

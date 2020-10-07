@@ -7,7 +7,9 @@
           <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
         </div>
         <input type="text" class="form-control" aria-label="Default"
-               aria-describedby="inputGroup-sizing-default" formControlName="name">
+               aria-describedby="inputGroup-sizing-default"
+               [ngClass]="{'is-invalid': !schemaForm.get('name').valid }"
+               formControlName="name">
       </div>
       <ng-container formArrayName="properties">
         <ng-container *ngFor="let property of properties.controls; let i=index">
@@ -46,5 +48,6 @@
   </div>
   <div class="card-footer">
     <small *ngIf="footerMessage" class="text-muted">{{footerMessage}}</small>
+    <button type="button" class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
   </div>
 </div>

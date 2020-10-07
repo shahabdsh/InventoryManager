@@ -26,7 +26,9 @@ export class ItemSchemaCardComponent implements OnInit {
     { label: 'Number', value: ItemSchemaPropertyType.Number },
   ];
 
-  constructor(private fb: FormBuilder, private itemSchemaService: ItemSchemaService, private datePipe: DatePipe) { }
+  constructor(private fb: FormBuilder,
+              private itemSchemaService: ItemSchemaService,
+              private datePipe: DatePipe) { }
 
   ngOnInit(): void {
 
@@ -38,7 +40,7 @@ export class ItemSchemaCardComponent implements OnInit {
     });
 
     this.schemaForm = this.fb.group({
-      name: [this.schema.name],
+      name: [this.schema.name, Validators.required],
       properties: this.fb.array(properties),
     });
 
