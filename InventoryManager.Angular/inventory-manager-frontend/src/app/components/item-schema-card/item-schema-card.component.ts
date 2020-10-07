@@ -5,6 +5,7 @@ import {ItemSchemaService} from '../../services/item-schema.service';
 import {Item} from '../../models/item';
 import {DatePipe} from '@angular/common';
 import {timer} from "rxjs";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-item-schema-card',
@@ -28,7 +29,8 @@ export class ItemSchemaCardComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private itemSchemaService: ItemSchemaService,
-              private datePipe: DatePipe) { }
+              private datePipe: DatePipe,
+              private modalService: NgbModal) { }
 
   ngOnInit(): void {
 
@@ -100,5 +102,13 @@ export class ItemSchemaCardComponent implements OnInit {
     });
 
     this.changed = false;
+  }
+
+  showDeleteModal(content, schema: ItemSchema) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.itemSchemaService.delete(schema.id);
+    },(reason) => {
+
+    });
   }
 }

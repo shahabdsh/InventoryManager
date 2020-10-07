@@ -48,6 +48,24 @@
   </div>
   <div class="card-footer">
     <small *ngIf="footerMessage" class="text-muted">{{footerMessage}}</small>
-    <button type="button" class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+    <button (click)="showDeleteModal(content, schema)" type="button" class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
   </div>
 </div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Are you sure?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">
+        <i class="fas fa-times"></i>
+      </span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deleting item schema will not remove associated items but it will mark them as untyped. This action is irreversible.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-outline-danger" (click)="modal.close('Save click')">Delete</button>
+  </div>
+</ng-template>
