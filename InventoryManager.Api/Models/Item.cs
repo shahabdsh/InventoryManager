@@ -5,7 +5,7 @@ namespace InventoryManager.Api.Models
     public class Item : EntityBase
     {
         public string Name { get; set; }
-        public string Type { get; set; }
+        public string SchemaId { get; set; }
         public int Quantity { get; set; }
         public IDictionary<string, object> Properties { get; set; }
     }

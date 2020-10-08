@@ -4,7 +4,7 @@ export class Item extends EntityBase {
 
   id: string;
   name: string;
-  type: string;
+  schemaId: string;
   quantity: number;
   properties;
 

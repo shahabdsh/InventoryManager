@@ -14,7 +14,7 @@ export class ItemSchemasComponent implements OnInit {
   constructor(private itemSchemaService: ItemSchemaService) { }
 
   ngOnInit(): void {
-    this.itemSchemaService.getAll().subscribe();
+    this.itemSchemaService.getAllIfCurrentItemsAreNull();
   }
 
   get schemas$ () {
@@ -26,7 +26,7 @@ export class ItemSchemasComponent implements OnInit {
     let name = "New Schema"
     this.itemSchemaService.allItemsTakeOne.subscribe(schemas => {
 
-      let number = 1;
+      let number = 2;
       while (schemas.some(schema => {
         return schema.name === name;
       })) {
@@ -40,5 +40,9 @@ export class ItemSchemasComponent implements OnInit {
     } as ItemSchema;
 
     this.itemSchemaService.create(obj).subscribe();
+  }
+
+  itemTrackBy (index: number, itemSchema: ItemSchema) {
+    return itemSchema.id;
   }
 }

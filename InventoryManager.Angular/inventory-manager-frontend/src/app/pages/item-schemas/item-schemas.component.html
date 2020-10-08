@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <ng-container *ngIf="schemas$ | async as schemas">
-        <div *ngFor="let schema of schemas" class="col-md-4">
+        <div *ngFor="let schema of schemas; trackBy: itemTrackBy" class="col-md-4">
           <app-item-schema-card [schema]="schema"></app-item-schema-card>
         </div>
       </ng-container>

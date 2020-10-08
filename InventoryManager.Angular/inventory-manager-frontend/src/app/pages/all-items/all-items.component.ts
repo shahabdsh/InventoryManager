@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ItemService } from '../../services/item.service';
 import {ItemSchemaService} from "../../services/item-schema.service";
 import {ItemSchema} from "../../models/item-schema";
+import {Item} from "../../models/item";
 
 @Component({
   selector: 'app-all-items',
@@ -13,8 +14,8 @@ export class AllItemsComponent implements OnInit {
   constructor(public itemsService: ItemService, private itemSchemaService: ItemSchemaService) { }
 
   ngOnInit(): void {
-    this.itemsService.getAll().subscribe();
-    this.itemSchemaService.getAll().subscribe();
+    this.itemsService.getAllIfCurrentItemsAreNull();
+    this.itemSchemaService.getAllIfCurrentItemsAreNull();
   }
 
   addItem (schema: ItemSchema) {
@@ -23,5 +24,9 @@ export class AllItemsComponent implements OnInit {
 
   get schemas$ () {
     return this.itemSchemaService.allItems$;
+  }
+
+  itemTrackBy (index: number, item: Item) {
+    return item.id;
   }
 }

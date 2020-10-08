@@ -1,8 +1,8 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-Use schema id instead of name for item's type
-- When a schema is deleted, all of the related items become "untyped" but not deleted
 Have a google style add button at the bottom right corner of screen
+Validation for reserved words in item schema (name, type, schemeId)
+- Server-side validation (use fluent validation)
 Login and authentication system
 Location system (each location has separate inventory)
 Merge some of the functionality of item and item schema cards
@@ -17,8 +17,9 @@ Tip/tutorial system
 
 Use pagination on the items list
 Abstract mongodb away as much as possible (something like a dbcontext)
-Add tests project
-The two controllers for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.
+Unit tests
+Frontend tests
+The two controllers/services for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.
 
 Add readme for running locally
 Make better use of bootstrap and make the app mobile friendly

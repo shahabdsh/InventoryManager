@@ -35,6 +35,14 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
     return ob;
   }
 
+  getAllIfCurrentItemsAreNull () {
+    this.allItems$.pipe(take(1)).subscribe(current => {
+      if (!current) {
+        this.getAll();
+      }
+    });
+  }
+
   update(id: string, item: T) {
 
     let ob = this.httpClient.put(`${this.itemsUrl}/${id}`, item).pipe(

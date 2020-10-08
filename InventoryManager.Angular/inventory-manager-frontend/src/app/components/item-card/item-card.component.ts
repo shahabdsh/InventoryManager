@@ -34,7 +34,6 @@ export class ItemCardComponent implements OnInit {
   ngOnInit(): void {
     this.itemForm = this.fb.group({
       name: [this.item.name],
-      type: {value: this.item.type, disabled: true},
       quantity: [this.item.quantity]
     });
 
@@ -42,14 +41,17 @@ export class ItemCardComponent implements OnInit {
 
     this.itemSchemaService.allItemsTakeOne.subscribe(schemas => {
 
-      this.schema = schemas.find(s => s.name === this.item.type);
+      this.schema = schemas.find(s => s.id === this.item.schemaId);
       const config = {};
-      this.schema.properties.forEach(property => {
-        config[property.name] = [this.item.properties ? this.item.properties[property.name] : null];
-        this.allProperties.push({
-          name: property.name, type: property.type
+
+      if (this.schema) {
+        this.schema.properties.forEach(property => {
+          config[property.name] = [this.item.properties ? this.item.properties[property.name] : null];
+          this.allProperties.push({
+            name: property.name, type: property.type
+          });
         });
-      });
+      }
 
       let existingProperties = this.item.properties;
 
@@ -91,8 +93,9 @@ export class ItemCardComponent implements OnInit {
       .pipe(debounceTime(600))
       .subscribe(_ => {
 
-        const obj = new Item(this.itemForm.getRawValue()) as any;
+        const obj = new Item(this.itemForm.getRawValue()) as Item;
         obj.id = this.item.id;
+        obj.schemaId = this.item.schemaId;
 
         this.itemsService.update(this.item.id, obj).subscribe(response => {
           this.footerMessage = "Saved!";
@@ -101,5 +104,9 @@ export class ItemCardComponent implements OnInit {
           });
         });
       });
+  }
+
+  get itemType () {
+    return this.schema ? this.schema.name : "Untyped";
   }
 }

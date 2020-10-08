@@ -22,7 +22,7 @@ export class ItemService extends GenericRepositoryService<Item> {
 
     let item = new Item({
       name: "New Item",
-      type: schema.name,
+      schemaId: schema.id,
       quantity: 0,
     });
 
