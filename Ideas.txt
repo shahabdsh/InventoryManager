@@ -15,11 +15,12 @@ Merge some of the functionality of item and item schema cards
 Add admin page where the admin can create new stores
 - Creating new stores adds a bunch of template items (hundreds)
 Tip/tutorial system
-
 Use pagination on the items list
 Abstract mongodb away as much as possible (something like a dbcontext)
 Unit tests
 Frontend tests
+
+Fix lint and run it on angular project
 
 Add readme for running locally
 Make better use of bootstrap and make the app mobile friendly
