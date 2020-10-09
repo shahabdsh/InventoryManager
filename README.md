@@ -2,10 +2,10 @@
 
 ![Alt text](Screenshot.png "Screenshot")
 
-Welcome! This is a hobby project of mine. It is an inventory management system that I keep adding to features. Here are some quick notes about it:
+Welcome! This is a hobby project of mine. It is an inventory management system that I keep adding features to. Here are some quick notes about it:
 
   - The project is built using MongoDb, ASP.NET Core 3.1, and Angular 10
-  - Item types (referred to as schemas) can be created and customized, then assigned to new items (e.g. book, cheese, etc.)
+  - Item types (referred to as schemas) can be created and customized, then used to create new items (e.g. book, cheese, etc.)
 
 ### Installation and Run
 
@@ -18,9 +18,9 @@ The following components need to be installed on the running machine:
 
 Ensure the `ConnectionString` in `InventoryManager.Api\appsettings.Development.json` points to your local MongoDb installation
 
-Also ensure the `apiUrl` in `InventoryManager.Angular\inventory-manager-frontend\src\environments` points to the local backend
+Also ensure the `apiUrl` in `InventoryManager.Angular\inventory-manager-frontend\src\environments` points to the locally running backend
 
-Navigate to InventoryManager.Angular\inventory-manager-frontend and run the following to install npm packages and serve the angular app
+Navigate to `InventoryManager.Angular\inventory-manager-frontend` and run the following to install npm packages and serve the angular app
 
 ```sh
 $ npm install
