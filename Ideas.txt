@@ -19,7 +19,6 @@ Use pagination on the items list
 Abstract mongodb away as much as possible (something like a dbcontext)
 Unit tests
 Frontend tests
-The two controllers/services for Item and ItemSchema look pretty much identical. Maybe do something cool to reduce redundancy.
 
 Add readme for running locally
 Make better use of bootstrap and make the app mobile friendly
