@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace InventoryManager.Api.Services
 {
-    public abstract class GenericRepositoryService<T> where T : EntityBase
+    public abstract class GenericRepositoryService<T> : IGenericRepositoryService<T> where T : EntityBase
     {
         private readonly IMongoCollection<T> _items;
         

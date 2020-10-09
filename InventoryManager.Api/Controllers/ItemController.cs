@@ -11,82 +11,10 @@ namespace InventoryManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class ItemController : RepositoryBasedController<Item, ItemDto>
     {
-        private readonly IItemService _itemService;
-        private readonly IMapper _mapper;
-
-        public ItemController(IItemService itemService, IMapper mapper)
+        public ItemController(IItemService itemService, IMapper mapper) : base(itemService, mapper)
         {
-            _itemService = itemService;
-            _mapper = mapper;
-        }
-
-        [HttpGet]
-        public ActionResult<List<ItemDto>> Get() =>
-            _mapper.Map<List<ItemDto>>(_itemService.Get());
-
-        [HttpGet("{id:length(24)}", Name = "GetItem")]
-        public ActionResult<ItemDto> Get(string id)
-        {
-            var item = _itemService.Get(id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            var itemDto = _mapper.Map<ItemDto>(item);
-
-            return itemDto;
-        }
-
-        [HttpPost]
-        public ActionResult<ItemDto> Create(ItemDto itemDto)
-        {
-            var item = _mapper.Map<Item>(itemDto);
-            
-            item.CreatedOn = DateTimeOffset.Now;
-
-            var created = _itemService.Create(item);
-
-            var newItemDto = _mapper.Map<ItemDto>(created);
-
-            return CreatedAtRoute("GetItem", new { id = created.Id.ToString() }, newItemDto);
-        }
-
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, ItemDto itemDto)
-        {
-            var existing = _itemService.Get(id);
-
-            if (existing == null)
-            {
-                return NotFound();
-            }
-
-            var item = _mapper.Map<Item>(itemDto);
-            
-            item.UpdatedOn = DateTimeOffset.Now;
-
-            _itemService.Update(id, item);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
-        {
-            var item = _itemService.Get(id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            _itemService.Remove(item.Id);
-
-            return NoContent();
         }
     }
 }
