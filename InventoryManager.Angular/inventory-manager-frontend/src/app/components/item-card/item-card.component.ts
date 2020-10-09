@@ -39,7 +39,7 @@ export class ItemCardComponent implements OnInit {
 
     this.allProperties = [];
 
-    this.itemSchemaService.allItemsTakeOne.subscribe(schemas => {
+    this.itemSchemaService.allEntitiesTakeOne.subscribe(schemas => {
 
       this.schema = schemas.find(s => s.id === this.item.schemaId);
       const config = {};

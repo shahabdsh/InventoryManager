@@ -14,7 +14,7 @@ export class ItemService extends GenericRepositoryService<Item> {
     super(httpClient);
   }
 
-  get itemsUrl() {
+  get entitiesUrl() {
     return 'https://localhost:5001/api/item';
   }
 

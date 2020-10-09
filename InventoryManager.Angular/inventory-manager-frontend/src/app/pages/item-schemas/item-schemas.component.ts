@@ -14,17 +14,17 @@ export class ItemSchemasComponent implements OnInit {
   constructor(private itemSchemaService: ItemSchemaService) { }
 
   ngOnInit(): void {
-    this.itemSchemaService.getAllIfCurrentItemsAreNull();
+    this.itemSchemaService.getAllIfCurrentEntitiesAreNull();
   }
 
   get schemas$ () {
-    return this.itemSchemaService.allItems$;
+    return this.itemSchemaService.allEntities$;
   }
 
   add () {
 
     let name = "New Schema"
-    this.itemSchemaService.allItemsTakeOne.subscribe(schemas => {
+    this.itemSchemaService.allEntitiesTakeOne.subscribe(schemas => {
 
       let number = 2;
       while (schemas.some(schema => {

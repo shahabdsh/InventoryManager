@@ -3,7 +3,7 @@ using InventoryManager.Api.Models;
 
 namespace InventoryManager.Api.Services
 {
-    public interface IItemService : IGenericRepositoryService<Item>
+    public interface IItemService : IRepositoryService<Item>
     {
     }
 }

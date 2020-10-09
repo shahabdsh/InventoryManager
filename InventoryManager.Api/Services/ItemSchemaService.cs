@@ -3,9 +3,9 @@ using Microsoft.Extensions.Options;
 
 namespace InventoryManager.Api.Services
 {
-    public class ItemSchemaService : GenericRepositoryService<ItemSchema>, IItemSchemaService
+    public class ItemSchemaService : RepositoryService<ItemSchema>, IItemSchemaService
     {
-        protected override string ItemCollectionName => "ItemSchemas";
+        protected override string EntityCollectionName => "ItemSchemas";
 
         public ItemSchemaService(IOptions<InventoryDatabaseSettings> settings) : base(settings)
         {

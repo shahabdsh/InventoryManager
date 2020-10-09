@@ -11,25 +11,25 @@ namespace InventoryManager.Api.Controllers
     /// 
     /// </summary>
     /// <typeparam name="T">Data layer entity type</typeparam>
-    /// <typeparam name="U">Dto type</typeparam>
+    /// <typeparam name="U">DTO type</typeparam>
     [Route("api/[controller]")]
     [ApiController]
     public abstract class RepositoryBasedController<T, U> : ControllerBase
         where T : EntityBase 
         where U : EntityBase
     {
-        private readonly IGenericRepositoryService<T> _itemService;
+        private readonly IRepositoryService<T> _repository;
         private readonly IMapper _mapper;
 
-        public RepositoryBasedController(IGenericRepositoryService<T> itemService, IMapper mapper)
+        public RepositoryBasedController(IRepositoryService<T> repository, IMapper mapper)
         {
-            _itemService = itemService;
+            _repository = repository;
             _mapper = mapper;
         }
 
         
         protected ActionResult<List<U>> GetBase() =>
-            _mapper.Map<List<U>>(_itemService.Get());
+            _mapper.Map<List<U>>(_repository.Get());
         
         [HttpGet]
         public ActionResult<List<U>> Get()
@@ -39,69 +39,69 @@ namespace InventoryManager.Api.Controllers
         
         protected ActionResult<U> GetBase(string id)
         {
-            var item = _itemService.Get(id);
+            var entity = _repository.Get(id);
 
-            if (item == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            var itemDto = _mapper.Map<U>(item);
+            var entityDto = _mapper.Map<U>(entity);
 
-            return itemDto;
+            return entityDto;
         }
 
         public abstract ActionResult<U> Get(string id);
         
-        protected ActionResult<U> CreateBase(string routeName, U itemDto)
+        protected ActionResult<U> CreateBase(string routeName, U entityDto)
         {
-            var item = _mapper.Map<T>(itemDto);
+            var entity = _mapper.Map<T>(entityDto);
             
-            item.CreatedOn = DateTimeOffset.Now;
+            entity.CreatedOn = DateTimeOffset.Now;
 
-            var created = _itemService.Create(item);
+            var created = _repository.Create(entity);
 
-            var newItemDto = _mapper.Map<U>(created);
+            var newEntityDto = _mapper.Map<U>(created);
 
-            return CreatedAtRoute(routeName, new { id = created.Id }, newItemDto);
+            return CreatedAtRoute(routeName, new { id = created.Id }, newEntityDto);
         }
 
-        public abstract ActionResult<U> Create(U itemDto);
+        public abstract ActionResult<U> Create(U entityDto);
         
-        protected IActionResult UpdateBase(string id, U itemDto)
+        protected IActionResult UpdateBase(string id, U entityDto)
         {
-            var existing = _itemService.Get(id);
+            var existing = _repository.Get(id);
 
             if (existing == null)
             {
                 return NotFound();
             }
 
-            var item = _mapper.Map<T>(itemDto);
+            var entity = _mapper.Map<T>(entityDto);
             
-            item.UpdatedOn = DateTimeOffset.Now;
+            entity.UpdatedOn = DateTimeOffset.Now;
 
-            _itemService.Update(id, item);
+            _repository.Update(id, entity);
 
             return NoContent();
         }
 
         [HttpPut("{id:length(24)}")]
-        public virtual IActionResult Update(string id, U itemDto)
+        public virtual IActionResult Update(string id, U entityDto)
         {
-            return UpdateBase(id, itemDto);
+            return UpdateBase(id, entityDto);
         }
         
         protected IActionResult DeleteBase(string id)
         {
-            var item = _itemService.Get(id);
+            var entity = _repository.Get(id);
 
-            if (item == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            _itemService.Remove(item.Id);
+            _repository.Remove(entity.Id);
 
             return NoContent();
         }

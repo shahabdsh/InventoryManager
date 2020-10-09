@@ -14,8 +14,8 @@ export class AllItemsComponent implements OnInit {
   constructor(public itemsService: ItemService, private itemSchemaService: ItemSchemaService) { }
 
   ngOnInit(): void {
-    this.itemsService.getAllIfCurrentItemsAreNull();
-    this.itemSchemaService.getAllIfCurrentItemsAreNull();
+    this.itemsService.getAllIfCurrentEntitiesAreNull();
+    this.itemSchemaService.getAllIfCurrentEntitiesAreNull();
   }
 
   addItem (schema: ItemSchema) {
@@ -23,7 +23,7 @@ export class AllItemsComponent implements OnInit {
   }
 
   get schemas$ () {
-    return this.itemSchemaService.allItems$;
+    return this.itemSchemaService.allEntities$;
   }
 
   itemTrackBy (index: number, item: Item) {

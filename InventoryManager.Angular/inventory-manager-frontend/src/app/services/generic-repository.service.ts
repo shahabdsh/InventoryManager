@@ -5,62 +5,62 @@ import {EntityBase} from "../models/entity-base";
 
 export abstract class GenericRepositoryService <T extends EntityBase> {
 
-  allItems$: BehaviorSubject<T[]>;
+  allEntities$: BehaviorSubject<T[]>;
 
   protected constructor(protected httpClient: HttpClient) {
 
-    this.allItems$ = new BehaviorSubject<T[]>(null);
+    this.allEntities$ = new BehaviorSubject<T[]>(null);
   }
 
-  get allItems () {
-    return this.allItems$.pipe(filter(val => val != undefined));
+  get allEntities () {
+    return this.allEntities$.pipe(filter(val => val != undefined));
   }
 
-  get allItemsTakeOne () {
-    return this.allItems.pipe(take(1));
+  get allEntitiesTakeOne () {
+    return this.allEntities.pipe(take(1));
   }
 
-  abstract get itemsUrl(): string;
+  abstract get entitiesUrl(): string;
 
   getAll(): Observable<T[]> {
 
-    let ob = this.httpClient.get<T[]>(this.itemsUrl).pipe(
+    let ob = this.httpClient.get<T[]>(this.entitiesUrl).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
-      this.allItems$.next(result);
+      this.allEntities$.next(result);
     });
 
     return ob;
   }
 
-  getAllIfCurrentItemsAreNull () {
-    this.allItems$.pipe(take(1)).subscribe(current => {
+  getAllIfCurrentEntitiesAreNull () {
+    this.allEntities$.pipe(take(1)).subscribe(current => {
       if (!current) {
         this.getAll();
       }
     });
   }
 
-  update(id: string, item: T) {
+  update(id: string, entity: T) {
 
-    let ob = this.httpClient.put(`${this.itemsUrl}/${id}`, item).pipe(
+    let ob = this.httpClient.put(`${this.entitiesUrl}/${id}`, entity).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
-      this.allItems.pipe(take(1)).subscribe(current => {
+      this.allEntities.pipe(take(1)).subscribe(current => {
 
-        let currentItem = current.find(x => x.id === id);
+        let currentEntity = current.find(x => x.id === id);
 
-        for (const property in currentItem) {
-          if (currentItem.hasOwnProperty(property)) {
-            currentItem[property] = item[property];
+        for (const property in currentEntity) {
+          if (currentEntity.hasOwnProperty(property)) {
+            currentEntity[property] = entity[property];
           }
         }
 
-        this.allItems$.next(current);
+        this.allEntities$.next(current);
       })
     });
 
@@ -69,30 +69,30 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
 
   delete(id: string) {
 
-    let ob = this.httpClient.delete(`${this.itemsUrl}/${id}`).pipe(
+    let ob = this.httpClient.delete(`${this.entitiesUrl}/${id}`).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
-      this.allItems.pipe(take(1)).subscribe(current => {
+      this.allEntities.pipe(take(1)).subscribe(current => {
         let newArray = current.filter(x => x.id !== id);
-        this.allItems$.next(newArray);
+        this.allEntities$.next(newArray);
       })
     });
 
     return ob;
   }
 
-  create(item: T): Observable<T> {
+  create(entity: T): Observable<T> {
 
-    let ob = this.httpClient.post<T>(`${this.itemsUrl}`, item).pipe(
+    let ob = this.httpClient.post<T>(`${this.entitiesUrl}`, entity).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
-      this.allItems.pipe(take(1)).subscribe(current => {
+      this.allEntities.pipe(take(1)).subscribe(current => {
         current.push(result);
-        this.allItems$.next(current);
+        this.allEntities$.next(current);
       })
     });
 

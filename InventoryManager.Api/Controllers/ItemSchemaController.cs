@@ -12,7 +12,7 @@ namespace InventoryManager.Api.Controllers
     {
         private const string GetRouteName = nameof(ItemSchemaController);
         
-        public ItemSchemaController(IItemSchemaService itemSchemaService, IMapper mapper) : base(itemSchemaService, mapper)
+        public ItemSchemaController(IItemSchemaService schemaRepository, IMapper mapper) : base(schemaRepository, mapper)
         {
         }
 

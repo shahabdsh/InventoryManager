@@ -12,7 +12,7 @@ export class ItemSchemaService extends GenericRepositoryService<ItemSchema> {
     super(httpClient);
   }
 
-  get itemsUrl(): string {
+  get entitiesUrl(): string {
     return 'https://localhost:5001/api/itemschema';
   }
 }
