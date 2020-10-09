@@ -1,5 +1,7 @@
 # InventoryManager
 
+![Alt text](Screenshot.png "Screenshot")
+
 Welcome! This is a hobby project of mine. It is an inventory management system that I keep adding to features. Here are some quick notes about it:
 
   - The project is built using MongoDb, ASP.NET Core 3.1, and Angular 10
