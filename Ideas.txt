@@ -1,16 +1,17 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-Have a google style add button at the bottom right corner of screen
-Validation for reserved words in item schema (name, type, schemeId)
-- Server-side validation (use fluent validation)
-Login and authentication system
-Location system (each location has separate inventory)
-Merge some of the functionality of item and item schema cards
 Searching and filtering items
 - Fuzzy search over all fields
 - Item type filter
 - Specific field filter
 - A range slider can be used for number fields
+Validation for reserved words in item schema (name, type, schemeId)
+- Server-side validation (use fluent validation)
+- Show server side errors client side. Field related errors should appear under the respective field.
+Have a google style add button at the bottom right corner of screen
+Login and authentication system
+Location system (each location has separate inventory)
+Merge some of the functionality of item and item schema cards
 Add admin page where the admin can create new stores
 - Creating new stores adds a bunch of template items (hundreds)
 Tip/tutorial system

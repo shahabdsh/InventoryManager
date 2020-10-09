@@ -8,12 +8,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManager.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class ItemSchemaController : RepositoryBasedController<ItemSchema, ItemSchemaDto>
     {
+        private const string GetRouteName = nameof(ItemSchemaController);
+        
         public ItemSchemaController(IItemSchemaService itemSchemaService, IMapper mapper) : base(itemSchemaService, mapper)
         {
+        }
+
+        [HttpGet("{id:length(24)}", Name = GetRouteName)]
+        public override ActionResult<ItemSchemaDto> Get(string id)
+        {
+            return GetBase(id);
+        }
+
+        public override ActionResult<ItemSchemaDto> Create(ItemSchemaDto itemDto)
+        {
+            return CreateBase(GetRouteName, itemDto);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace InventoryManager.Api.Controllers
     /// <typeparam name="U">Dto type</typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    public class RepositoryBasedController<T, U> : ControllerBase 
+    public abstract class RepositoryBasedController<T, U> : ControllerBase
         where T : EntityBase 
         where U : EntityBase
     {
@@ -27,12 +27,17 @@ namespace InventoryManager.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public ActionResult<List<U>> Get() =>
+        
+        protected ActionResult<List<U>> GetBase() =>
             _mapper.Map<List<U>>(_itemService.Get());
-
-        [HttpGet("{id:length(24)}")]
-        public ActionResult<U> Get(string id)
+        
+        [HttpGet]
+        public ActionResult<List<U>> Get()
+        {
+            return GetBase();
+        }
+        
+        protected ActionResult<U> GetBase(string id)
         {
             var item = _itemService.Get(id);
 
@@ -46,8 +51,9 @@ namespace InventoryManager.Api.Controllers
             return itemDto;
         }
 
-        [HttpPost]
-        public ActionResult<U> Create(U itemDto)
+        public abstract ActionResult<U> Get(string id);
+        
+        protected ActionResult<U> CreateBase(string routeName, U itemDto)
         {
             var item = _mapper.Map<T>(itemDto);
             
@@ -57,11 +63,12 @@ namespace InventoryManager.Api.Controllers
 
             var newItemDto = _mapper.Map<U>(created);
 
-            return CreatedAtRoute("GetItem", new { id = created.Id.ToString() }, newItemDto);
+            return CreatedAtRoute(routeName, new { id = created.Id }, newItemDto);
         }
 
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, U itemDto)
+        public abstract ActionResult<U> Create(U itemDto);
+        
+        protected IActionResult UpdateBase(string id, U itemDto)
         {
             var existing = _itemService.Get(id);
 
@@ -79,8 +86,13 @@ namespace InventoryManager.Api.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
+        [HttpPut("{id:length(24)}")]
+        public virtual IActionResult Update(string id, U itemDto)
+        {
+            return UpdateBase(id, itemDto);
+        }
+        
+        protected IActionResult DeleteBase(string id)
         {
             var item = _itemService.Get(id);
 
@@ -92,6 +104,12 @@ namespace InventoryManager.Api.Controllers
             _itemService.Remove(item.Id);
 
             return NoContent();
+        }
+
+        [HttpDelete("{id:length(24)}")]
+        public virtual IActionResult Delete(string id)
+        {
+            return DeleteBase(id);
         }
     }
 }
