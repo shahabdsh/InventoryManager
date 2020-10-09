@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Item} from '../../models/item';
+import {Item} from '@models/item';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ItemService} from '../../services/item.service';
+import {ItemService} from '@services/item.service';
 import {debounceTime} from 'rxjs/operators';
 import {DatePipe} from '@angular/common';
-import {ItemSchemaService} from '../../services/item-schema.service';
-import {ItemSchema, ItemSchemaProperty, ItemSchemaPropertyType} from '../../models/item-schema';
+import {ItemSchemaService} from '@services/item-schema.service';
+import {ItemSchema, ItemSchemaProperty, ItemSchemaPropertyType} from '@models/item-schema';
 import {timer} from "rxjs";
 
 @Component({

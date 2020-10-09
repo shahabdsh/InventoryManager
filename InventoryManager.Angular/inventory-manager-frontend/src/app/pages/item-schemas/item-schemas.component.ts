@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Item } from '../../models/item';
-import {ItemSchemaService} from '../../services/item-schema.service';
-import {ItemSchema} from '../../models/item-schema';
+import {ItemSchemaService} from '@services/item-schema.service';
+import {ItemSchema} from '@models/item-schema';
 
 @Component({
   selector: 'app-item-schemas',

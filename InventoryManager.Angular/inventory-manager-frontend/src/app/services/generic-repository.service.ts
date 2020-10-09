@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {filter, shareReplay, take} from "rxjs/operators";
-import {EntityBase} from "../models/entity-base";
+import {EntityBase} from "@models/entity-base";
 
 export abstract class GenericRepositoryService <T extends EntityBase> {
 

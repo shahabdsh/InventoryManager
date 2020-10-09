@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AllItemsComponent } from './pages/all-items/all-items.component';
-import { ItemSchemasComponent } from './pages/item-schemas/item-schemas.component';
+import { AllItemsComponent } from '@pages/all-items/all-items.component';
+import { ItemSchemasComponent } from '@pages/item-schemas/item-schemas.component';
 
 const routes: Routes = [
   { path: 'all-items', component: AllItemsComponent },

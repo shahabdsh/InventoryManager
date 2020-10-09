@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ItemSchema, ItemSchemaPropertyType} from '../../models/item-schema';
+import {ItemSchema, ItemSchemaPropertyType} from '@models/item-schema';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ItemSchemaService} from '../../services/item-schema.service';
-import {Item} from '../../models/item';
+import {ItemSchemaService} from '@services/item-schema.service';
+import {Item} from '@models/item';
 import {DatePipe} from '@angular/common';
 import {timer} from "rxjs";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';

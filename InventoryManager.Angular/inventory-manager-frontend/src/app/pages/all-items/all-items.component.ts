@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemService } from '../../services/item.service';
-import {ItemSchemaService} from "../../services/item-schema.service";
-import {ItemSchema} from "../../models/item-schema";
-import {Item} from "../../models/item";
+import { ItemService } from '@services/item.service';
+import {ItemSchemaService} from "@services/item-schema.service";
+import {ItemSchema} from "@models/item-schema";
+import {Item} from "@models/item";
 
 @Component({
   selector: 'app-all-items',

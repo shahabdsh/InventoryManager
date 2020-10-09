@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Item } from '../models/item';
-import { ItemSchema } from "../models/item-schema";
+import { Item } from '@models/item';
+import { ItemSchema } from "@models/item-schema";
 import { GenericRepositoryService } from "./generic-repository.service";
-import { environment } from "../../environments/environment";
+import { environment } from "@env";
 
 @Injectable({
   providedIn: 'root'

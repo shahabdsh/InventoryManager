@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ItemSchema} from '../models/item-schema';
+import {ItemSchema} from '@models/item-schema';
 import {GenericRepositoryService} from "./generic-repository.service";
-import {environment} from "../../environments/environment";
+import { environment } from "@env";
 
 @Injectable({
   providedIn: 'root'
