@@ -16,6 +16,7 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
     return this.allEntities$.pipe(filter(val => val !== null));
   }
 
+  // Bug: This is used in methods like create and there will likely be issues if allEntities$ is null
   get allEntitiesTakeOne() {
     return this.allEntities.pipe(take(1));
   }
@@ -50,7 +51,7 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
     );
 
     ob.subscribe(result => {
-      this.allEntities.pipe(take(1)).subscribe(current => {
+      this.allEntitiesTakeOne.subscribe(current => {
 
         const currentEntity = current.find(x => x.id === id);
 
@@ -76,7 +77,7 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
     );
 
     ob.subscribe(result => {
-      this.allEntities.pipe(take(1)).subscribe(current => {
+      this.allEntitiesTakeOne.subscribe(current => {
         const newArray = current.filter(x => x.id !== id);
         this.allEntities$.next(newArray);
       });
@@ -92,7 +93,7 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
     );
 
     ob.subscribe(result => {
-      this.allEntities.pipe(take(1)).subscribe(current => {
+      this.allEntitiesTakeOne.subscribe(current => {
         current.push(result);
         this.allEntities$.next(current);
       });
