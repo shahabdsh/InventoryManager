@@ -54,9 +54,9 @@ export class ItemSchemaCardComponent implements OnInit {
     this.changed = false;
 
     if (this.schema.updatedOn) {
-      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
+      this.footerMessage = `Updated on: ${this.datePipe.transform(this.schema.updatedOn, "medium")}`;
     } else if (this.schema.createdOn) {
-      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), "medium")}`;
+      this.footerMessage = `Created on: ${this.datePipe.transform(this.schema.createdOn, "medium")}`;
     }
   }
 

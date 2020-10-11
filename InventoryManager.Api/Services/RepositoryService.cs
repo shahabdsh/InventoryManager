@@ -9,7 +9,7 @@ namespace InventoryManager.Api.Services
     public abstract class RepositoryService<T> : IRepositoryService<T> where T : EntityBase
     {
         private readonly IMongoCollection<T> _entities;
-        
+
         protected abstract string EntityCollectionName { get; }
 
         protected RepositoryService(IOptions<InventoryDatabaseSettings> settings)
@@ -28,19 +28,30 @@ namespace InventoryManager.Api.Services
 
         public T Create(T entity)
         {
+            entity.CreatedOn = DateTimeOffset.Now;
             _entities.InsertOne(entity);
             return entity;
         }
 
         public void Update(string id, T entityIn)
         {
+            var existing = Get(id);
+
+            if (existing == null)
+            {
+                throw new InvalidOperationException("The entity with the given id does not exist.");
+            }
+
+            entityIn.CreatedOn = existing.CreatedOn;
+            entityIn.UpdatedOn = DateTimeOffset.Now;
+
             _entities.ReplaceOne(entity => entity.Id == id, entityIn);
         }
 
         public void Remove(T entityIn) =>
             _entities.DeleteOne(entity => entity.Id == entityIn.Id);
 
-        public void Remove(string id) => 
+        public void Remove(string id) =>
             _entities.DeleteOne(entity => entity.Id == id);
     }
 }

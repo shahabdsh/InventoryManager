@@ -27,7 +27,7 @@ $ npm install
 $ npm start
 ```
 
-Build and run the .Net Core project using Rider or Visual Studio. (Rider is used for this project's development.)
+Build and run the .Net Core project using the SDK or IDE of your choice. (Rider is used for this project's development.)
 
 ### Features
 

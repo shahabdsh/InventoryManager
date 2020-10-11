@@ -54,6 +54,8 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
 
         const currentEntity = current.find(x => x.id === id);
 
+        currentEntity.updatedOn = new Date();
+
         for (const property in currentEntity) {
           if (currentEntity.hasOwnProperty(property)) {
             currentEntity[property] = entity[property];

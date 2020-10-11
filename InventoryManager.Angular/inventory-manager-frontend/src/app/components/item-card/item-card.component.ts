@@ -70,9 +70,9 @@ export class ItemCardComponent implements OnInit {
     });
 
     if (this.item.updatedOn) {
-      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
+      this.footerMessage = `Updated on: ${this.datePipe.transform(this.item.updatedOn, "medium")}`;
     } else if (this.item.createdOn) {
-      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), "medium")}`;
+      this.footerMessage = `Created on: ${this.datePipe.transform(this.item.createdOn, "medium")}`;
     }
   }
 
