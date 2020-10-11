@@ -1,17 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Item} from '@models/item';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {ItemService} from '@services/item.service';
-import {debounceTime} from 'rxjs/operators';
-import {DatePipe} from '@angular/common';
-import {ItemSchemaService} from '@services/item-schema.service';
-import {ItemSchema, ItemSchemaProperty, ItemSchemaPropertyType} from '@models/item-schema';
-import {timer} from "rxjs";
+import { Component, Input, OnInit } from "@angular/core";
+import { Item } from "@models/item";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { ItemService } from "@services/item.service";
+import { debounceTime } from "rxjs/operators";
+import { DatePipe } from "@angular/common";
+import { ItemSchemaService } from "@services/item-schema.service";
+import { ItemSchema, ItemSchemaProperty, ItemSchemaPropertyType } from "@models/item-schema";
+import { timer } from "rxjs";
 
 @Component({
-  selector: 'app-item-card',
-  templateUrl: './item-card.component.html',
-  styleUrls: ['./item-card.component.scss']
+  selector: "app-item-card",
+  templateUrl: "./item-card.component.html",
+  styleUrls: ["./item-card.component.scss"]
 })
 export class ItemCardComponent implements OnInit {
 
@@ -19,7 +19,7 @@ export class ItemCardComponent implements OnInit {
   itemForm: FormGroup;
   schema: ItemSchema;
 
-  showConfirmDelete: boolean
+  showConfirmDelete: boolean;
 
   footerMessage: string;
 
@@ -53,7 +53,7 @@ export class ItemCardComponent implements OnInit {
         });
       }
 
-      let existingProperties = this.item.properties;
+      const existingProperties = this.item.properties;
 
       for (const property in existingProperties) {
         if (existingProperties.hasOwnProperty(property) && existingProperties[property] && !config.hasOwnProperty(property)) {
@@ -64,19 +64,19 @@ export class ItemCardComponent implements OnInit {
         }
       }
 
-      this.itemForm.addControl('properties', this.fb.group(config));
+      this.itemForm.addControl("properties", this.fb.group(config));
 
       this.registerAutosave();
     });
 
     if (this.item.updatedOn) {
-      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
     } else if (this.item.createdOn) {
-      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), "medium")}`;
     }
   }
 
-  attemptDelete () {
+  attemptDelete() {
     this.showConfirmDelete = true;
 
     timer(2000).subscribe(() => {
@@ -84,7 +84,7 @@ export class ItemCardComponent implements OnInit {
     });
   }
 
-  delete () {
+  delete() {
     this.itemsService.delete(this.item.id).subscribe();
   }
 
@@ -100,13 +100,13 @@ export class ItemCardComponent implements OnInit {
         this.itemsService.update(this.item.id, obj).subscribe(response => {
           this.footerMessage = "Saved!";
           timer(1500).subscribe(() => {
-            this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+            this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
           });
         });
       });
   }
 
-  get itemType () {
+  get itemType() {
     return this.schema ? this.schema.name : "Untyped";
   }
 }

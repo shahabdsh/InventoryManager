@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {ItemSchema} from '@models/item-schema';
-import {GenericRepositoryService} from "./generic-repository.service";
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { ItemSchema } from "@models/item-schema";
+import { GenericRepositoryService } from "./generic-repository.service";
 import { environment } from "@env";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ItemSchemaService extends GenericRepositoryService<ItemSchema> {
 

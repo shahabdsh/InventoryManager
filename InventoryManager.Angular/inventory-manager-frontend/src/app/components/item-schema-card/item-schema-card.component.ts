@@ -1,16 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ItemSchema, ItemSchemaPropertyType} from '@models/item-schema';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ItemSchemaService} from '@services/item-schema.service';
-import {Item} from '@models/item';
-import {DatePipe} from '@angular/common';
-import {timer} from "rxjs";
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, OnInit } from "@angular/core";
+import { ItemSchema, ItemSchemaPropertyType } from "@models/item-schema";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ItemSchemaService } from "@services/item-schema.service";
+import { Item } from "@models/item";
+import { DatePipe } from "@angular/common";
+import { timer } from "rxjs";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: 'app-item-schema-card',
-  templateUrl: './item-schema-card.component.html',
-  styleUrls: ['./item-schema-card.component.scss']
+  selector: "app-item-schema-card",
+  templateUrl: "./item-schema-card.component.html",
+  styleUrls: ["./item-schema-card.component.scss"]
 })
 export class ItemSchemaCardComponent implements OnInit {
 
@@ -23,14 +23,15 @@ export class ItemSchemaCardComponent implements OnInit {
 
   // Todo: Automatically init this.
   itemPropertyTypes = [
-    { label: 'Text', value: ItemSchemaPropertyType.Text },
-    { label: 'Number', value: ItemSchemaPropertyType.Number },
+    {label: "Text", value: ItemSchemaPropertyType.Text},
+    {label: "Number", value: ItemSchemaPropertyType.Number},
   ];
 
   constructor(private fb: FormBuilder,
               private itemSchemaService: ItemSchemaService,
               private datePipe: DatePipe,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal) {
+  }
 
   ngOnInit(): void {
 
@@ -53,15 +54,15 @@ export class ItemSchemaCardComponent implements OnInit {
     this.changed = false;
 
     if (this.schema.updatedOn) {
-      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
     } else if (this.schema.createdOn) {
-      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), 'medium')}`;
+      this.footerMessage = `Created on: ${this.datePipe.transform(new Date(), "medium")}`;
     }
   }
 
   createNewProperty(): FormGroup {
     return this.fb.group({
-      name: ['', Validators.required],
+      name: ["", Validators.required],
       type: ItemSchemaPropertyType.Text,
     });
   }
@@ -75,7 +76,7 @@ export class ItemSchemaCardComponent implements OnInit {
   }
 
   get properties(): FormArray {
-    return this.schemaForm.get('properties') as FormArray;
+    return this.schemaForm.get("properties") as FormArray;
   }
 
   getTypeLabel(typeValue) {
@@ -94,10 +95,10 @@ export class ItemSchemaCardComponent implements OnInit {
     this.itemSchemaService.update(this.schema.id, obj).subscribe(result => {
       this.footerMessage = "Saved!";
       timer(1500).subscribe(() => {
-        this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), 'medium')}`;
+        this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
       });
     }, error => {
-      this.footerMessage = 'Error saving!';
+      this.footerMessage = "Error saving!";
       this.changed = true;
     });
 
@@ -105,9 +106,9 @@ export class ItemSchemaCardComponent implements OnInit {
   }
 
   showDeleteModal(content, schema: ItemSchema) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    this.modalService.open(content, {ariaLabelledBy: "modal-basic-title"}).result.then((result) => {
       this.itemSchemaService.delete(schema.id);
-    },(reason) => {
+    }, (reason) => {
 
     });
   }

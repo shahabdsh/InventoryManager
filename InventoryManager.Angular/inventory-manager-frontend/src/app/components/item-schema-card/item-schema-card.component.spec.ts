@@ -1,25 +1,25 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ItemSchemaComponent } from './item-schema.component';
+import { ItemSchemaCardComponent } from "./item-schema-card.component";
 
-describe('ItemSchemaComponent', () => {
-  let component: ItemSchemaComponent;
-  let fixture: ComponentFixture<ItemSchemaComponent>;
+describe("ItemSchemaComponent", () => {
+  let component: ItemSchemaCardComponent;
+  let fixture: ComponentFixture<ItemSchemaCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ItemSchemaComponent ]
+      declarations: [ItemSchemaCardComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemSchemaComponent);
+    fixture = TestBed.createComponent(ItemSchemaCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

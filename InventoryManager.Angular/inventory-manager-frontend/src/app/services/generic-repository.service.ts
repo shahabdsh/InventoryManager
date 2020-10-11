@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {filter, shareReplay, take} from "rxjs/operators";
-import {EntityBase} from "@models/entity-base";
+import { HttpClient } from "@angular/common/http";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { filter, shareReplay, take } from "rxjs/operators";
+import { EntityBase } from "@models/entity-base";
 
-export abstract class GenericRepositoryService <T extends EntityBase> {
+export abstract class GenericRepositoryService<T extends EntityBase> {
 
   allEntities$: BehaviorSubject<T[]>;
 
@@ -12,11 +12,11 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
     this.allEntities$ = new BehaviorSubject<T[]>(null);
   }
 
-  get allEntities () {
-    return this.allEntities$.pipe(filter(val => val != undefined));
+  get allEntities() {
+    return this.allEntities$.pipe(filter(val => val !== null));
   }
 
-  get allEntitiesTakeOne () {
+  get allEntitiesTakeOne() {
     return this.allEntities.pipe(take(1));
   }
 
@@ -24,7 +24,7 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
 
   getAll(): Observable<T[]> {
 
-    let ob = this.httpClient.get<T[]>(this.entitiesUrl).pipe(
+    const ob = this.httpClient.get<T[]>(this.entitiesUrl).pipe(
       shareReplay(1)
     );
 
@@ -35,7 +35,7 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
     return ob;
   }
 
-  getAllIfCurrentEntitiesAreNull () {
+  getAllIfCurrentEntitiesAreNull() {
     this.allEntities$.pipe(take(1)).subscribe(current => {
       if (!current) {
         this.getAll();
@@ -45,14 +45,14 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
 
   update(id: string, entity: T) {
 
-    let ob = this.httpClient.put(`${this.entitiesUrl}/${id}`, entity).pipe(
+    const ob = this.httpClient.put(`${this.entitiesUrl}/${id}`, entity).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
       this.allEntities.pipe(take(1)).subscribe(current => {
 
-        let currentEntity = current.find(x => x.id === id);
+        const currentEntity = current.find(x => x.id === id);
 
         for (const property in currentEntity) {
           if (currentEntity.hasOwnProperty(property)) {
@@ -61,7 +61,7 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
         }
 
         this.allEntities$.next(current);
-      })
+      });
     });
 
     return ob;
@@ -69,15 +69,15 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
 
   delete(id: string) {
 
-    let ob = this.httpClient.delete(`${this.entitiesUrl}/${id}`).pipe(
+    const ob = this.httpClient.delete(`${this.entitiesUrl}/${id}`).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
       this.allEntities.pipe(take(1)).subscribe(current => {
-        let newArray = current.filter(x => x.id !== id);
+        const newArray = current.filter(x => x.id !== id);
         this.allEntities$.next(newArray);
-      })
+      });
     });
 
     return ob;
@@ -85,7 +85,7 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
 
   create(entity: T): Observable<T> {
 
-    let ob = this.httpClient.post<T>(`${this.entitiesUrl}`, entity).pipe(
+    const ob = this.httpClient.post<T>(`${this.entitiesUrl}`, entity).pipe(
       shareReplay(1)
     );
 
@@ -93,7 +93,7 @@ export abstract class GenericRepositoryService <T extends EntityBase> {
       this.allEntities.pipe(take(1)).subscribe(current => {
         current.push(result);
         this.allEntities$.next(current);
-      })
+      });
     });
 
     return ob;

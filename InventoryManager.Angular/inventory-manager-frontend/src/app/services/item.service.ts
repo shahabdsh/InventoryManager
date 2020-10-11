@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Item } from '@models/item';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { Item } from "@models/item";
 import { ItemSchema } from "@models/item-schema";
 import { GenericRepositoryService } from "./generic-repository.service";
 import { environment } from "@env";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ItemService extends GenericRepositoryService<Item> {
 
@@ -21,7 +21,7 @@ export class ItemService extends GenericRepositoryService<Item> {
 
   createUsingSchema(schema: ItemSchema): Observable<Item> {
 
-    let item = new Item({
+    const item = new Item({
       name: "New Item",
       schemaId: schema.id,
       quantity: 0,
