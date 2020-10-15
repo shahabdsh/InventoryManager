@@ -1,15 +1,21 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
 Searching and filtering items
+- Have a side bar that can be shown/hidden
 - Fuzzy search over all fields
 - Item type filter
 - Specific field filter
 - A range slider can be used for number fields
+- Queries such as "page-gt:5" are sent to backend to filter for number of pages > 5.
+  * Therefore dashes shouldn't be allowed in a field
 Validation for reserved words in item schema (name, type, schemeId)
 - Server-side validation (use fluent validation)
 - Show server side errors client side. Field related errors should appear under the respective field.
+Don't let user delete item types if associated items exist
 Have a google style add button at the bottom right corner of screen
 Login and authentication system
+- Entity ownership
+  * Add a "CreatedBy" field to entities
 Location system (each location has separate inventory)
 Merge some of the functionality of item and item schema cards
 Add admin page where the admin can create new stores
@@ -17,6 +23,7 @@ Add admin page where the admin can create new stores
 Tip/tutorial system
 Use pagination on the items list
 Abstract mongodb away as much as possible (something like a dbcontext)
+Add auditing for CRUD of entities such as item and schema
 Unit tests
 Frontend tests
 
@@ -28,3 +35,7 @@ Make better use of bootstrap and make the app mobile friendly
 Add a clear and concise feature list with pictures to read me. Pay attention to UX so it delivers all the info well
 Show off the following:
 - Generic typescript repository layer
+
+Re-write some/all the backend using NodeJS
+Re-write some/all the frontend using React
+Build pipeline
