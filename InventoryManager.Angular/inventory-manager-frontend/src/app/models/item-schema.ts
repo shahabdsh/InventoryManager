@@ -18,5 +18,6 @@ export class ItemSchemaProperty {
 
 export enum ItemSchemaPropertyType {
   Text = 0,
-  Number = 1
+  Number = 1,
+  Checkbox = 2,
 }

@@ -1,7 +1,5 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-Add checkbox field
-Fix number field so it uses html number input
 Searching and filtering items
 - Fuzzy search over all fields
 - Item type filter

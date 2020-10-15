@@ -46,7 +46,15 @@ export class ItemCardComponent implements OnInit {
 
       if (this.schema) {
         this.schema.properties.forEach(property => {
-          config[property.name] = [this.item.properties ? this.item.properties[property.name] : null];
+
+          let value;
+          if (property.type === ItemSchemaPropertyType.Checkbox) {
+            value = this.item.properties ? (this.item.properties[property.name] === "true") : false;
+          } else {
+            value = this.item.properties ? (this.item.properties[property.name] ?? "") : "";
+          }
+
+          config[property.name] = [value];
           this.allProperties.push({
             name: property.name, type: property.type
           });
@@ -97,6 +105,12 @@ export class ItemCardComponent implements OnInit {
         obj.id = this.item.id;
         obj.schemaId = this.item.schemaId;
 
+        for (const property in obj.properties) {
+          if (obj.properties.hasOwnProperty(property)) {
+            obj.properties[property] = obj.properties[property].toString();
+          }
+        }
+
         this.itemsService.update(this.item.id, obj).subscribe(response => {
           this.footerMessage = "Saved!";
           timer(1500).subscribe(() => {
@@ -104,6 +118,21 @@ export class ItemCardComponent implements OnInit {
           });
         });
       });
+  }
+
+  getFieldType(schemaPropertyType: ItemSchemaPropertyType) {
+    switch (schemaPropertyType) {
+      case ItemSchemaPropertyType.Text:
+        return "text";
+      case ItemSchemaPropertyType.Number:
+        return "number";
+      case ItemSchemaPropertyType.Checkbox:
+        return "checkbox";
+    }
+  }
+
+  public get itemSchemaPropertyTypes() {
+    return ItemSchemaPropertyType;
   }
 
   get itemType() {

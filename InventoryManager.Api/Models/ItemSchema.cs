@@ -17,6 +17,7 @@ namespace InventoryManager.Api.Models
     public enum ItemSchemaPropertyType
     {
         Text = 0,
-        Number = 1
+        Number = 1,
+        Checkbox = 2
     }
 }

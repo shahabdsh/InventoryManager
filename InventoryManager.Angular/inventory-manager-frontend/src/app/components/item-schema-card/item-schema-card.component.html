@@ -20,7 +20,7 @@
               </div>
               <div class="col-5">
                 <select class="form-control" formControlName="type">
-                  <option *ngFor="let type of itemPropertyTypes" [ngValue]="type.value">{{type.label}}</option>
+                  <option *ngFor="let type of itemPropertyTypesArray" [ngValue]="type.value">{{type.label}}</option>
                 </select>
               </div>
               <div class="col">

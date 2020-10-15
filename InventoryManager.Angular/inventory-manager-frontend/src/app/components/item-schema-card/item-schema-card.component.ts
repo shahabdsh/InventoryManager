@@ -22,9 +22,10 @@ export class ItemSchemaCardComponent implements OnInit {
   footerMessage: string;
 
   // Todo: Automatically init this.
-  itemPropertyTypes = [
+  itemPropertyTypesArray = [
     {label: "Text", value: ItemSchemaPropertyType.Text},
     {label: "Number", value: ItemSchemaPropertyType.Number},
+    {label: "Checkbox", value: ItemSchemaPropertyType.Checkbox},
   ];
 
   constructor(private fb: FormBuilder,
@@ -80,7 +81,7 @@ export class ItemSchemaCardComponent implements OnInit {
   }
 
   getTypeLabel(typeValue) {
-    return this.itemPropertyTypes.find(prop => prop.value === typeValue).label;
+    return this.itemPropertyTypesArray.find(prop => prop.value === typeValue).label;
   }
 
   save() {
