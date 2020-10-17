@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
@@ -11,15 +9,15 @@ namespace InventoryManager.Api.Controllers
     public class ItemSchemaController : RepositoryBasedController<ItemSchema, ItemSchemaDto>
     {
         private const string GetRouteName = nameof(ItemSchemaController);
-        
+
         public ItemSchemaController(IItemSchemaService schemaRepository, IMapper mapper) : base(schemaRepository, mapper)
         {
         }
 
         [HttpGet("{id:length(24)}", Name = GetRouteName)]
-        public override ActionResult<ItemSchemaDto> Get(string id)
+        public override ActionResult<ItemSchemaDto> GetOne(string id)
         {
-            return GetBase(id);
+            return GetOneBase(id);
         }
 
         public override ActionResult<ItemSchemaDto> Create(ItemSchemaDto itemDto)

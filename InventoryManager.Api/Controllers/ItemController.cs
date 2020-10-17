@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
@@ -18,9 +15,9 @@ namespace InventoryManager.Api.Controllers
         }
 
         [HttpGet("{id:length(24)}", Name = GetRouteName)]
-        public override ActionResult<ItemDto> Get(string id)
+        public override ActionResult<ItemDto> GetOne(string id)
         {
-            return GetBase(id);
+            return GetOneBase(id);
         }
 
         [HttpPost]

@@ -28,18 +28,20 @@ namespace InventoryManager.Api.Controllers
         }
 
 
-        protected ActionResult<List<U>> GetBase() =>
-            _mapper.Map<List<U>>(_repository.Get());
+        protected ActionResult<List<U>> GetBase(string query) =>
+            string.IsNullOrWhiteSpace(query) ?
+            _mapper.Map<List<U>>(_repository.Get()) :
+            _mapper.Map<List<U>>(_repository.Get(query));
 
         [HttpGet]
-        public ActionResult<List<U>> Get()
+        public ActionResult<List<U>> Get([FromQuery(Name = "query")] string query)
         {
-            return GetBase();
+            return GetBase(query);
         }
 
-        protected ActionResult<U> GetBase(string id)
+        protected ActionResult<U> GetOneBase(string id)
         {
-            var entity = _repository.Get(id);
+            var entity = _repository.GetOne(id);
 
             if (entity == null)
             {
@@ -51,7 +53,7 @@ namespace InventoryManager.Api.Controllers
             return entityDto;
         }
 
-        public abstract ActionResult<U> Get(string id);
+        public abstract ActionResult<U> GetOne(string id);
 
         protected ActionResult<U> CreateBase(string routeName, U entityDto)
         {
@@ -90,7 +92,7 @@ namespace InventoryManager.Api.Controllers
 
         protected IActionResult DeleteBase(string id)
         {
-            var entity = _repository.Get(id);
+            var entity = _repository.GetOne(id);
 
             if (entity == null)
             {

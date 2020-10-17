@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using InventoryManager.Api.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -21,10 +23,33 @@ namespace InventoryManager.Api.Services
         }
 
         public List<T> Get() =>
-            _entities.Find(entity => true).ToList();
+            Get(entity => true);
 
-        public T Get(string id) =>
-            _entities.Find<T>(entity => entity.Id == id).FirstOrDefault();
+        public List<T> Get(Expression<Func<T,bool>> filter) =>
+            _entities.Find(filter).ToList();
+
+        public List<T> Get(string query)
+        {
+            var filters = ParseQuery(query);
+
+            if (filters.Count > 0)
+            {
+                var filter = filters[0];
+                for (var i = 1; i < filters.Count; i++)
+                {
+                    filter &= filters[i];
+                }
+
+                return _entities.Find(filter).ToList();
+            }
+            else
+            {
+                return Get();
+            }
+        }
+
+        public T GetOne(string id) =>
+            _entities.Find(entity => entity.Id == id).FirstOrDefault();
 
         public T Create(T entity)
         {
@@ -35,7 +60,7 @@ namespace InventoryManager.Api.Services
 
         public void Update(string id, T entityIn)
         {
-            var existing = Get(id);
+            var existing = GetOne(id);
 
             if (existing == null)
             {
@@ -53,5 +78,62 @@ namespace InventoryManager.Api.Services
 
         public void Remove(string id) =>
             _entities.DeleteOne(entity => entity.Id == id);
+
+        private static List<FilterDefinition<T>> ParseQuery(string query)
+        {
+            const string querySeparator = ";";
+            const string operatorSeparator = "-";
+            const string evalSeparator = ":";
+
+            var builder = Builders<T>.Filter;
+
+            var filters = query.Split(querySeparator).Select(subQuery =>
+            {
+                var parts = subQuery.Split(evalSeparator);
+
+                if (parts.Length != 2)
+                {
+                    throw new Exception($"Each sub-query must only contain one '{evalSeparator}'.");
+                }
+
+                var fieldAndOperator = parts[0];
+                var value = parts[1];
+
+                var op = "eq";
+                string field;
+
+                if (fieldAndOperator.Contains(operatorSeparator))
+                {
+                    var fieldAndOperatorParts = fieldAndOperator.Split("-");
+                    op = fieldAndOperatorParts[1];
+
+                    if (string.IsNullOrWhiteSpace(op))
+                    {
+                        throw new Exception($"'{operatorSeparator}' must be followed by an operation.");
+                    }
+
+                    field = fieldAndOperatorParts[0];
+                }
+                else
+                {
+                    field = fieldAndOperator;
+                }
+
+                field = char.ToUpper(field.First()) + field.Substring(1);
+
+                return op switch
+                {
+                    "eq" => builder.Eq(field, value),
+                    "lt" => builder.Lt(field, value),
+                    "lte" => builder.Lte(field, value),
+                    "gt" => builder.Gt(field, value),
+                    "gte" => builder.Gte(field, value),
+                    "ctn" => builder.Regex(field, $".*{value}.*"),
+                    _ => throw new Exception($"{op} is not a known operation.")
+                };
+            }).ToList();
+
+            return filters;
+        }
     }
 }
