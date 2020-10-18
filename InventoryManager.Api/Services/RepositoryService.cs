@@ -30,6 +30,21 @@ namespace InventoryManager.Api.Services
 
         public List<T> Get(string query)
         {
+            return GetInternal(query).ToList();
+        }
+
+        public List<string> GetIdsOnly()
+        {
+            return GetIdsOnly("");
+        }
+
+        public List<string> GetIdsOnly(string query)
+        {
+            return GetInternal(query).Project(entity => entity.Id).ToList();
+        }
+
+        private IFindFluent<T, T> GetInternal(string query)
+        {
             var filters = ParseQuery(query);
 
             if (filters.Count > 0)
@@ -40,11 +55,11 @@ namespace InventoryManager.Api.Services
                     filter &= filters[i];
                 }
 
-                return _entities.Find(filter).ToList();
+                return _entities.Find(filter);
             }
             else
             {
-                return Get();
+                return _entities.Find(entity => true);
             }
         }
 
@@ -85,26 +100,31 @@ namespace InventoryManager.Api.Services
             const string operatorSeparator = "-";
             const string evalSeparator = ":";
 
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return new List<FilterDefinition<T>>();
+            }
+
             var builder = Builders<T>.Filter;
 
             var filters = query.Split(querySeparator).Select(subQuery =>
             {
-                var parts = subQuery.Split(evalSeparator);
+                var parts = subQuery.Trim().Split(evalSeparator);
 
                 if (parts.Length != 2)
                 {
                     throw new Exception($"Each sub-query must only contain one '{evalSeparator}'.");
                 }
 
-                var fieldAndOperator = parts[0];
-                var value = parts[1];
+                var fieldAndOperator = parts[0].Trim();
+                var value = parts[1].Trim();
 
                 var op = "eq";
                 string field;
 
                 if (fieldAndOperator.Contains(operatorSeparator))
                 {
-                    var fieldAndOperatorParts = fieldAndOperator.Split("-");
+                    var fieldAndOperatorParts = fieldAndOperator.Trim().Split("-");
                     op = fieldAndOperatorParts[1];
 
                     if (string.IsNullOrWhiteSpace(op))
@@ -118,8 +138,6 @@ namespace InventoryManager.Api.Services
                 {
                     field = fieldAndOperator;
                 }
-
-                field = char.ToUpper(field.First()) + field.Substring(1);
 
                 return op switch
                 {

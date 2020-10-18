@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { filter, shareReplay, take } from "rxjs/operators";
 import { EntityBase } from "@models/entity-base";
 
@@ -34,6 +34,11 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
     });
 
     return ob;
+  }
+
+  getIds(query: string): Observable<string[]> {
+
+    return this.httpClient.get<string[]>(`${this.entitiesUrl}/ids?query=${query}`);
   }
 
   getAllIfCurrentEntitiesAreNull() {

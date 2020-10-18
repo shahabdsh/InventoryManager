@@ -3,6 +3,9 @@ import { ItemService } from "@services/item.service";
 import { ItemSchemaService } from "@services/item-schema.service";
 import { ItemSchema } from "@models/item-schema";
 import { Item } from "@models/item";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { debounceTime } from "rxjs/operators";
+import { BehaviorSubject} from "rxjs";
 
 @Component({
   selector: "app-all-items",
@@ -11,10 +14,29 @@ import { Item } from "@models/item";
 })
 export class AllItemsComponent implements OnInit {
 
-  constructor(public itemsService: ItemService, private itemSchemaService: ItemSchemaService) {
+  searchForm: FormGroup;
+
+  filteredItems$: BehaviorSubject<Item[]>;
+
+  constructor(public itemsService: ItemService,
+              private fb: FormBuilder,
+              private itemSchemaService: ItemSchemaService) {
+
+    this.filteredItems$ = new BehaviorSubject<Item[]>(null);
   }
 
   ngOnInit(): void {
+
+    this.searchForm = this.fb.group({
+      search: []
+    });
+
+    this.itemsService.allEntities$.subscribe(items => {
+      this.filteredItems$.next(items);
+    })
+
+    this.registerSearchCallback();
+
     this.itemsService.getAllIfCurrentEntitiesAreNull();
     this.itemSchemaService.getAllIfCurrentEntitiesAreNull();
   }
@@ -29,5 +51,28 @@ export class AllItemsComponent implements OnInit {
 
   itemTrackBy(index: number, item: Item) {
     return item.id;
+  }
+
+  registerSearchCallback () {
+    this.searchForm.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(val => {
+
+        let searchTerm = val.search;
+
+        this.itemsService.allEntitiesTakeOne
+          .subscribe((currentItems) => {
+            this.itemsService.getIds(searchTerm).subscribe(ids => {
+
+              let newItems = currentItems.filter(item => {
+                return ids.indexOf(item.id) !== -1;
+              });
+
+              this.filteredItems$.next(newItems);
+            }, () => {
+              this.filteredItems$.next(currentItems);
+            })
+        });
+      });
   }
 }

@@ -27,7 +27,6 @@ namespace InventoryManager.Api.Controllers
             _mapper = mapper;
         }
 
-
         protected ActionResult<List<U>> GetBase(string query) =>
             string.IsNullOrWhiteSpace(query) ?
             _mapper.Map<List<U>>(_repository.Get()) :
@@ -37,6 +36,17 @@ namespace InventoryManager.Api.Controllers
         public ActionResult<List<U>> Get([FromQuery(Name = "query")] string query)
         {
             return GetBase(query);
+        }
+
+        protected ActionResult<List<string>> GetIdsBase(string query) =>
+            string.IsNullOrWhiteSpace(query) ?
+                _repository.GetIdsOnly():
+                _repository.GetIdsOnly(query);
+
+        [HttpGet("ids")]
+        public ActionResult<List<string>> GetIds([FromQuery(Name = "query")] string query)
+        {
+            return GetIdsBase(query);
         }
 
         protected ActionResult<U> GetOneBase(string id)

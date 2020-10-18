@@ -18,13 +18,15 @@ namespace InventoryManager.Api
                     .SetIdGenerator(StringObjectIdGenerator.Instance)
                     .SetSerializer(new StringSerializer(BsonType.ObjectId));
             });
-            
+
             BsonClassMap.RegisterClassMap<Item>(cm => {
                 cm.SetDiscriminator(nameof(Item));
                 cm.AutoMap();
+                cm.MapMember(c => c.SchemaId)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
                 cm.MapExtraElementsMember(c => c.Properties);
             });
-            
+
             BsonClassMap.RegisterClassMap<ItemSchema>(cm => {
                 cm.SetDiscriminator(nameof(ItemSchema));
                 cm.AutoMap();

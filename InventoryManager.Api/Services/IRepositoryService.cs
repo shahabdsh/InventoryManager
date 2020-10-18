@@ -17,6 +17,8 @@ namespace InventoryManager.Api.Services
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         List<T> Get(string query);
+        List<string> GetIdsOnly();
+        List<string> GetIdsOnly(string query);
         T GetOne(string id);
         T Create(T entity);
         void Update(string id, T entityIn);
