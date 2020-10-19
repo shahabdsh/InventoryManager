@@ -7,6 +7,12 @@ namespace InventoryManager.Api.Models
         public string Name { get; set; }
         public string SchemaId { get; set; }
         public int Quantity { get; set; }
-        public IDictionary<string, object> Properties { get; set; }
+        public List<ItemProperty> Properties { get; set; }
+    }
+
+    public class ItemProperty
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

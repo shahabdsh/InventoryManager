@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using InventoryManager.Api.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -25,7 +26,7 @@ namespace InventoryManager.Api.Services
         public List<T> Get() =>
             Get(entity => true);
 
-        public List<T> Get(Expression<Func<T,bool>> filter) =>
+        public List<T> Get(Expression<Func<T, bool>> filter) =>
             _entities.Find(filter).ToList();
 
         public List<T> Get(string query)
@@ -45,22 +46,13 @@ namespace InventoryManager.Api.Services
 
         private IFindFluent<T, T> GetInternal(string query)
         {
-            var filters = ParseQuery(query);
+            var complexQueryRegex = new Regex(@"{.*}");
 
-            if (filters.Count > 0)
-            {
-                var filter = filters[0];
-                for (var i = 1; i < filters.Count; i++)
-                {
-                    filter &= filters[i];
-                }
+            var filter = complexQueryRegex.Match(query).Success
+                ? ParseComplexQuery(query)
+                : ConvertSimpleQueryToFilters(query);
 
-                return _entities.Find(filter);
-            }
-            else
-            {
-                return _entities.Find(entity => true);
-            }
+            return _entities.Find(filter);
         }
 
         public T GetOne(string id) =>
@@ -94,20 +86,22 @@ namespace InventoryManager.Api.Services
         public void Remove(string id) =>
             _entities.DeleteOne(entity => entity.Id == id);
 
-        private static List<FilterDefinition<T>> ParseQuery(string query)
+        private static FilterDefinition<T> ParseComplexQuery(string query)
         {
             const string querySeparator = ";";
             const string operatorSeparator = "-";
             const string evalSeparator = ":";
 
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                return new List<FilterDefinition<T>>();
-            }
+            var trimmedQuery = query.Replace("{", "").Replace("}", "");
 
             var builder = Builders<T>.Filter;
 
-            var filters = query.Split(querySeparator).Select(subQuery =>
+            if (string.IsNullOrWhiteSpace(trimmedQuery))
+            {
+                return builder.Empty;
+            }
+
+            var filters = trimmedQuery.Split(querySeparator).Select(subQuery =>
             {
                 var parts = subQuery.Trim().Split(evalSeparator);
 
@@ -151,7 +145,16 @@ namespace InventoryManager.Api.Services
                 };
             }).ToList();
 
-            return filters;
+            return filters.Aggregate(builder.Empty, (current, f) => current & f);
+        }
+
+        private static FilterDefinition<T> ConvertSimpleQueryToFilters(string query)
+        {
+            var builder = Builders<T>.Filter;
+
+            var filter = builder.Regex(nameof(EntityBase.Id), $".*{query}.*");
+
+            return filter;
         }
     }
 }

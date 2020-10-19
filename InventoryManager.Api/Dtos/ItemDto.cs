@@ -8,6 +8,6 @@ namespace InventoryManager.Api.Dtos
         public string Name { get; set; }
         public string SchemaId { get; set; }
         public int Quantity { get; set; }
-        public IDictionary<string, string> Properties { get; set; }
+        public List<ItemProperty> Properties { get; set; }
     }
 }

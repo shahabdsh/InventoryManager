@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Item } from "@models/item";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { ItemService } from "@services/item.service";
 import { debounceTime } from "rxjs/operators";
 import { DatePipe } from "@angular/common";
 import { ItemSchemaService } from "@services/item-schema.service";
-import { ItemSchema, ItemSchemaProperty, ItemSchemaPropertyType } from "@models/item-schema";
+import { ItemSchema, ItemSchemaPropertyType } from "@models/item-schema";
 import { timer } from "rxjs";
 
 @Component({
@@ -23,8 +23,6 @@ export class ItemCardComponent implements OnInit {
 
   footerMessage: string;
 
-  allProperties: ItemSchemaProperty[];
-
   constructor(private fb: FormBuilder,
               private itemsService: ItemService,
               private datePipe: DatePipe,
@@ -37,42 +35,38 @@ export class ItemCardComponent implements OnInit {
       quantity: [this.item.quantity]
     });
 
-    this.allProperties = [];
-
     this.itemSchemaService.allEntitiesTakeOne.subscribe(schemas => {
 
       this.schema = schemas.find(s => s.id === this.item.schemaId);
-      const config = {};
 
-      if (this.schema) {
-        this.schema.properties.forEach(property => {
+      let propertiesConfig = [];
 
-          let value;
-          if (property.type === ItemSchemaPropertyType.Checkbox) {
-            value = this.item.properties ? (this.item.properties[property.name] === "true") : false;
-          } else {
-            value = this.item.properties ? (this.item.properties[property.name] ?? "") : "";
-          }
+      this.schema.properties.forEach(schemaProp => {
+        let itemProp = this.item.properties.find(p => p.key === schemaProp.name);
 
-          config[property.name] = [value];
-          this.allProperties.push({
-            name: property.name, type: property.type
-          });
-        });
-      }
-
-      const existingProperties = this.item.properties;
-
-      for (const property in existingProperties) {
-        if (existingProperties.hasOwnProperty(property) && existingProperties[property] && !config.hasOwnProperty(property)) {
-          config[property] = [this.item.properties ? this.item.properties[property] : null];
-          this.allProperties.push({
-            name: property, type: ItemSchemaPropertyType.Text
-          });
+        if (itemProp) {
+          propertiesConfig.push(this.fb.group({
+            key: [schemaProp.name],
+            value: [schemaProp.type === ItemSchemaPropertyType.Checkbox ? (itemProp.value === "true") : itemProp.value]
+          }));
+        } else {
+          propertiesConfig.push(this.fb.group({
+            key: [schemaProp.name],
+            value: [schemaProp.type === ItemSchemaPropertyType.Checkbox ? false : ""]
+          }));
         }
-      }
+      });
 
-      this.itemForm.addControl("properties", this.fb.group(config));
+      this.item.properties.forEach(property => {
+        if (property.value && this.schema.properties.find(p => p.name === property.key) === undefined) {
+          propertiesConfig.push(this.fb.group({
+            key: property.key,
+            value: property.value
+          }));
+        }
+      });
+
+      this.itemForm.addControl("properties", this.fb.array(propertiesConfig));
 
       this.registerAutosave();
     });
@@ -105,11 +99,9 @@ export class ItemCardComponent implements OnInit {
         obj.id = this.item.id;
         obj.schemaId = this.item.schemaId;
 
-        for (const property in obj.properties) {
-          if (obj.properties.hasOwnProperty(property)) {
-            obj.properties[property] = obj.properties[property].toString();
-          }
-        }
+        obj.properties.forEach(prop => {
+          prop.value = prop.value.toString();
+        });
 
         this.itemsService.update(this.item.id, obj).subscribe(response => {
           this.footerMessage = "Saved!";
@@ -120,7 +112,10 @@ export class ItemCardComponent implements OnInit {
       });
   }
 
-  getFieldType(schemaPropertyType: ItemSchemaPropertyType) {
+  public getPropertyFieldType(propertyName: string) {
+
+    const schemaPropertyType = this.schema.properties.find(prop => prop.name === propertyName)?.type;
+
     switch (schemaPropertyType) {
       case ItemSchemaPropertyType.Text:
         return "text";
@@ -128,7 +123,13 @@ export class ItemCardComponent implements OnInit {
         return "number";
       case ItemSchemaPropertyType.Checkbox:
         return "checkbox";
+      default:
+        return "text";
     }
+  }
+
+  public get properties(): FormArray {
+    return this.itemForm.get("properties") as FormArray;
   }
 
   public get itemSchemaPropertyTypes() {

@@ -19,26 +19,31 @@
         </div>
         <input type="number" class="form-control" formControlName="quantity">
       </div>
-      <ng-container formGroupName="properties" *ngFor="let property of allProperties">
-        <div *ngIf="property.type !== itemSchemaPropertyTypes.Checkbox" class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text">{{property.name}}</span>
+      <ng-container *ngIf="properties" formArrayName="properties">
+        <ng-container *ngFor="let property of properties.controls; let i=index" [formGroupName]="i">
+          <div *ngIf="getPropertyFieldType(property.value.key) !== 'checkbox'" class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{property.value.key}}</span>
+            </div>
+            <input [type]="getPropertyFieldType(property.value.key)" class="form-control" formControlName="value">
           </div>
-          <input [type]="getFieldType(property.type)" class="form-control" formControlName="{{property.name}}">
-        </div>
-        <div *ngIf="property.type === itemSchemaPropertyTypes.Checkbox" class="mb-3 form-check">
-          <label class="form-check-label">
-            <input class="form-check-input" type="checkbox" formControlName="{{property.name}}">
-            {{property.name}}
-          </label>
-        </div>
+          <div *ngIf="getPropertyFieldType(property.value.key) === 'checkbox'" class="mb-3 form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" formControlName="value">
+              {{property.value.key}}
+            </label>
+          </div>
+        </ng-container>
       </ng-container>
     </form>
     <small class="text-muted">ID: {{item.id}}</small>
   </div>
   <div class="card-footer">
     <small class="text-muted">{{footerMessage}}</small>
-    <button (click)="attemptDelete()" *ngIf="!showConfirmDelete" type="button" class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
-    <button (click)="delete()" *ngIf="showConfirmDelete" type="button" class="btn btn-danger btn-sm float-right">Confirm</button>
+    <button (click)="attemptDelete()" *ngIf="!showConfirmDelete" type="button"
+            class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+    <button (click)="delete()" *ngIf="showConfirmDelete" type="button" class="btn btn-danger btn-sm float-right">
+      Confirm
+    </button>
   </div>
 </div>
