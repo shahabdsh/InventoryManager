@@ -62,16 +62,21 @@ export class AllItemsComponent implements OnInit {
 
         this.itemsService.allEntitiesTakeOne
           .subscribe((currentItems) => {
-            this.itemsService.getIds(searchTerm).subscribe(ids => {
 
-              let newItems = currentItems.filter(item => {
-                return ids.indexOf(item.id) !== -1;
-              });
+            if (searchTerm) {
+              this.itemsService.getIds(searchTerm).subscribe(ids => {
 
-              this.filteredItems$.next(newItems);
-            }, () => {
+                let newItems = currentItems.filter(item => {
+                  return ids.indexOf(item.id) !== -1;
+                });
+
+                this.filteredItems$.next(newItems);
+              }, () => {
+                this.filteredItems$.next(currentItems);
+              })
+            } else {
               this.filteredItems$.next(currentItems);
-            })
+            }
         });
       });
   }

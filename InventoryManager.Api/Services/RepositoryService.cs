@@ -15,6 +15,8 @@ namespace InventoryManager.Api.Services
 
         protected abstract string EntityCollectionName { get; }
 
+        protected IQueryable<T> Entities => _entities.AsQueryable();
+
         protected RepositoryService(IOptions<InventoryDatabaseSettings> settings)
         {
             var client = new MongoClient(settings.Value.ConnectionString);
@@ -31,7 +33,7 @@ namespace InventoryManager.Api.Services
 
         public List<T> Get(string query)
         {
-            return GetInternal(query).ToList();
+            return GetQueryInternal(query).ToList();
         }
 
         public List<string> GetIdsOnly()
@@ -41,18 +43,17 @@ namespace InventoryManager.Api.Services
 
         public List<string> GetIdsOnly(string query)
         {
-            return GetInternal(query).Project(entity => entity.Id).ToList();
+            return GetQueryInternal(query).Select(entity => entity.Id).ToList();
         }
 
-        private IFindFluent<T, T> GetInternal(string query)
+        private IQueryable<T> GetQueryInternal(string query)
         {
-            var complexQueryRegex = new Regex(@"{.*}");
+            var complexQueryRegex = new Regex(@"{\s*(.*)\s*}");
+            var match = complexQueryRegex.Match(query);
 
-            var filter = complexQueryRegex.Match(query).Success
-                ? ParseComplexQuery(query)
-                : ConvertSimpleQueryToFilters(query);
-
-            return _entities.Find(filter);
+            return match.Success
+                ? AdvancedQueryFilter(match.Groups[1].Value)
+                : SimpleQueryFilter(query);
         }
 
         public T GetOne(string id) =>
@@ -86,22 +87,28 @@ namespace InventoryManager.Api.Services
         public void Remove(string id) =>
             _entities.DeleteOne(entity => entity.Id == id);
 
-        private static FilterDefinition<T> ParseComplexQuery(string query)
+        protected virtual IQueryable<T> AdvancedQueryFilter(string query)
+        {
+            return _entities.AsQueryable().Where(entity => true);
+        }
+
+        protected virtual IQueryable<T> SimpleQueryFilter(string query)
+        {
+            return _entities.AsQueryable().Where(entity => true);
+        }
+
+        protected List<BasicFilterDefinition> ParseQuery(string query)
         {
             const string querySeparator = ";";
             const string operatorSeparator = "-";
             const string evalSeparator = ":";
 
-            var trimmedQuery = query.Replace("{", "").Replace("}", "");
-
-            var builder = Builders<T>.Filter;
-
-            if (string.IsNullOrWhiteSpace(trimmedQuery))
+            if (string.IsNullOrWhiteSpace(query))
             {
-                return builder.Empty;
+                return new List<BasicFilterDefinition>();
             }
 
-            var filters = trimmedQuery.Split(querySeparator).Select(subQuery =>
+            var filters = query.Split(querySeparator).Select(subQuery =>
             {
                 var parts = subQuery.Trim().Split(evalSeparator);
 
@@ -119,42 +126,56 @@ namespace InventoryManager.Api.Services
                 if (fieldAndOperator.Contains(operatorSeparator))
                 {
                     var fieldAndOperatorParts = fieldAndOperator.Trim().Split("-");
-                    op = fieldAndOperatorParts[1];
+                    op = fieldAndOperatorParts[1].Trim();
 
                     if (string.IsNullOrWhiteSpace(op))
                     {
                         throw new Exception($"'{operatorSeparator}' must be followed by an operation.");
                     }
 
-                    field = fieldAndOperatorParts[0];
+                    field = fieldAndOperatorParts[0].Trim();
                 }
                 else
                 {
                     field = fieldAndOperator;
                 }
 
-                return op switch
+                return new BasicFilterDefinition
                 {
-                    "eq" => builder.Eq(field, value),
-                    "lt" => builder.Lt(field, value),
-                    "lte" => builder.Lte(field, value),
-                    "gt" => builder.Gt(field, value),
-                    "gte" => builder.Gte(field, value),
-                    "ctn" => builder.Regex(field, $".*{value}.*"),
-                    _ => throw new Exception($"{op} is not a known operation.")
+                    Field = field,
+                    Value = value,
+                    Operation = op switch
+                    {
+                        "eq" => BasicFilterOperation.Eq,
+                        "lt" => BasicFilterOperation.Lt,
+                        "lte" => BasicFilterOperation.Lte,
+                        "gt" => BasicFilterOperation.Gt,
+                        "gte" => BasicFilterOperation.Gte,
+                        "ctn" => BasicFilterOperation.Ctn,
+                        _ => throw new Exception($"{op} is not a known operation.")
+                    }
                 };
+
             }).ToList();
 
-            return filters.Aggregate(builder.Empty, (current, f) => current & f);
+            return filters;
         }
+    }
 
-        private static FilterDefinition<T> ConvertSimpleQueryToFilters(string query)
-        {
-            var builder = Builders<T>.Filter;
+    public class BasicFilterDefinition
+    {
+        public string Field { get; set; }
+        public BasicFilterOperation Operation { get; set; }
+        public string Value { get; set; }
+    }
 
-            var filter = builder.Regex(nameof(EntityBase.Id), $".*{query}.*");
-
-            return filter;
-        }
+    public enum BasicFilterOperation
+    {
+        Eq,
+        Lt,
+        Lte,
+        Gt,
+        Gte,
+        Ctn
     }
 }
