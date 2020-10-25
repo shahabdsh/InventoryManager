@@ -10,7 +10,8 @@
               <i class="fas fa-search"></i>
             </span>
             </div>
-            <input type="text" class="form-control" formControlName="search">
+            <input type="text" class="form-control" formControlName="search"
+                   [ngClass]="{'is-invalid': !searchForm.get('search').valid }">
           </div>
         </form>
       </div>

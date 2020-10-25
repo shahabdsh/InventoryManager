@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using InventoryManager.Api.Models;
 using Microsoft.Extensions.Options;
@@ -11,25 +10,20 @@ namespace InventoryManager.Api.Services
 {
     public abstract class RepositoryService<T> : IRepositoryService<T> where T : EntityBase
     {
-        private readonly IMongoCollection<T> _entities;
+        protected readonly IMongoCollection<T> Entities;
 
         protected abstract string EntityCollectionName { get; }
-
-        protected IQueryable<T> Entities => _entities.AsQueryable();
 
         protected RepositoryService(IOptions<InventoryDatabaseSettings> settings)
         {
             var client = new MongoClient(settings.Value.ConnectionString);
             var database = client.GetDatabase(settings.Value.DatabaseName);
 
-            _entities = database.GetCollection<T>(EntityCollectionName);
+            Entities = database.GetCollection<T>(EntityCollectionName);
         }
 
         public List<T> Get() =>
-            Get(entity => true);
-
-        public List<T> Get(Expression<Func<T, bool>> filter) =>
-            _entities.Find(filter).ToList();
+            Entities.Find(entity => true).ToList();
 
         public List<T> Get(string query)
         {
@@ -43,26 +37,33 @@ namespace InventoryManager.Api.Services
 
         public List<string> GetIdsOnly(string query)
         {
-            return GetQueryInternal(query).Select(entity => entity.Id).ToList();
+            return GetQueryInternal(query).Project(entity => entity.Id).ToList();
         }
 
-        private IQueryable<T> GetQueryInternal(string query)
+        private IFindFluent<T, T> GetQueryInternal(string query)
         {
-            var complexQueryRegex = new Regex(@"{\s*(.*)\s*}");
+            var complexQueryRegex = new Regex(@"=(.*)");
             var match = complexQueryRegex.Match(query);
 
-            return match.Success
-                ? AdvancedQueryFilter(match.Groups[1].Value)
-                : SimpleQueryFilter(query);
+            if (match.Success)
+            {
+                var filterDefs = ParseQuery(match.Groups[1].Value);
+                if (filterDefs.Count > 0)
+                {
+                    return AdvancedQueryFilter(match.Groups[1].Value, filterDefs);
+                }
+            }
+
+            return SimpleQueryFilter(query.TrimStart('='));
         }
 
         public T GetOne(string id) =>
-            _entities.Find(entity => entity.Id == id).FirstOrDefault();
+            Entities.Find(entity => entity.Id == id).FirstOrDefault();
 
         public T Create(T entity)
         {
             entity.CreatedOn = DateTimeOffset.Now;
-            _entities.InsertOne(entity);
+            Entities.InsertOne(entity);
             return entity;
         }
 
@@ -78,26 +79,26 @@ namespace InventoryManager.Api.Services
             entityIn.CreatedOn = existing.CreatedOn;
             entityIn.UpdatedOn = DateTimeOffset.Now;
 
-            _entities.ReplaceOne(entity => entity.Id == id, entityIn);
+            Entities.ReplaceOne(entity => entity.Id == id, entityIn);
         }
 
         public void Remove(T entityIn) =>
-            _entities.DeleteOne(entity => entity.Id == entityIn.Id);
+            Entities.DeleteOne(entity => entity.Id == entityIn.Id);
 
         public void Remove(string id) =>
-            _entities.DeleteOne(entity => entity.Id == id);
+            Entities.DeleteOne(entity => entity.Id == id);
 
-        protected virtual IQueryable<T> AdvancedQueryFilter(string query)
+        protected virtual IFindFluent<T, T> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
         {
-            return _entities.AsQueryable().Where(entity => true);
+            return Entities.Find(entity => true);
         }
 
-        protected virtual IQueryable<T> SimpleQueryFilter(string query)
+        protected virtual IFindFluent<T, T> SimpleQueryFilter(string query)
         {
-            return _entities.AsQueryable().Where(entity => true);
+            return Entities.Find(entity => true);
         }
 
-        protected List<BasicFilterDefinition> ParseQuery(string query)
+        private static List<BasicFilterDefinition> ParseQuery(string query)
         {
             const string querySeparator = ";";
             const string operatorSeparator = "-";
@@ -108,7 +109,9 @@ namespace InventoryManager.Api.Services
                 return new List<BasicFilterDefinition>();
             }
 
-            var filters = query.Split(querySeparator).Select(subQuery =>
+            var filters = query.Split(querySeparator)
+                .Where(subQuery => !string.IsNullOrWhiteSpace(subQuery))
+                .Select(subQuery =>
             {
                 var parts = subQuery.Trim().Split(evalSeparator);
 
@@ -120,7 +123,7 @@ namespace InventoryManager.Api.Services
                 var fieldAndOperator = parts[0].Trim();
                 var value = parts[1].Trim();
 
-                var op = "eq";
+                var op = "ctn"; // Default the operation to "contains"
                 string field;
 
                 if (fieldAndOperator.Contains(operatorSeparator))
@@ -156,7 +159,8 @@ namespace InventoryManager.Api.Services
                     }
                 };
 
-            }).ToList();
+            })
+                .ToList();
 
             return filters;
         }

@@ -1,13 +1,5 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-Searching and filtering items
-- Have a side bar that can be shown/hidden
-- Fuzzy search over all fields
-- Item type filter
-- Specific field filter
-- A range slider can be used for number fields
-- Queries such as "page-gt:5" are sent to backend to filter for number of pages > 5.
-  * Therefore dashes shouldn't be allowed in a field
 Validation for reserved words in item schema (name, type, schemeId)
 - Server-side validation (use fluent validation)
 - Show server side errors client side. Field related errors should appear under the respective field.
@@ -22,7 +14,9 @@ Add admin page where the admin can create new stores
 - Creating new stores adds a bunch of template items (hundreds)
 Tip/tutorial system
 Use pagination on the items list
-Abstract mongodb away as much as possible (something like a dbcontext)
+Searching and filtering items
+- Editing/adding items when a filter is present are buggy
+- Allow escape characters so "-" and ":" and ";" can still be used in field names and values
 Add auditing for CRUD of entities such as item and schema
 Unit tests
 Frontend tests

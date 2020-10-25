@@ -73,6 +73,7 @@ export class AllItemsComponent implements OnInit {
                 this.filteredItems$.next(newItems);
               }, () => {
                 this.filteredItems$.next(currentItems);
+                this.searchForm.controls["search"].setErrors({"invalid": true});
               })
             } else {
               this.filteredItems$.next(currentItems);
