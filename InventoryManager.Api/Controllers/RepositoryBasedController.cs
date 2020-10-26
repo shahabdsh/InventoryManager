@@ -23,7 +23,7 @@ namespace InventoryManager.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IValidator<T> _validator;
 
-        public RepositoryBasedController(IRepositoryService<T> repository, IMapper mapper, IValidator<T> validator)
+        public RepositoryBasedController(IRepositoryService<T> repository, IMapper mapper, IValidator<T> validator = null)
         {
             _repository = repository;
             _mapper = mapper;
@@ -72,11 +72,14 @@ namespace InventoryManager.Api.Controllers
         {
             var entity = _mapper.Map<T>(entityDto);
 
-            var validationResult = _validator.Validate(entity);
-
-            if (!validationResult.IsValid)
+            if (_validator != null)
             {
-                return BadRequest(validationResult.Errors);
+                var validationResult = _validator.Validate(entity);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors);
+                }
             }
 
             var created = _repository.Create(entity);
@@ -91,6 +94,16 @@ namespace InventoryManager.Api.Controllers
         protected IActionResult UpdateBase(string id, U entityDto)
         {
             var entity = _mapper.Map<T>(entityDto);
+
+            if (_validator != null)
+            {
+                var validationResult = _validator.Validate(entity);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors);
+                }
+            }
 
             try
             {
