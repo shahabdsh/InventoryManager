@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using FluentValidation;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,13 @@ namespace InventoryManager.Api.Controllers
     {
         private readonly IRepositoryService<T> _repository;
         private readonly IMapper _mapper;
+        private readonly IValidator<T> _validator;
 
-        public RepositoryBasedController(IRepositoryService<T> repository, IMapper mapper)
+        public RepositoryBasedController(IRepositoryService<T> repository, IMapper mapper, IValidator<T> validator)
         {
             _repository = repository;
             _mapper = mapper;
+            _validator = validator;
         }
 
         protected ActionResult<List<U>> GetBase(string query) =>
@@ -68,6 +71,13 @@ namespace InventoryManager.Api.Controllers
         protected ActionResult<U> CreateBase(string routeName, U entityDto)
         {
             var entity = _mapper.Map<T>(entityDto);
+
+            var validationResult = _validator.Validate(entity);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
 
             var created = _repository.Create(entity);
 

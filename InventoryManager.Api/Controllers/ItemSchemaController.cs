@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
@@ -10,7 +11,8 @@ namespace InventoryManager.Api.Controllers
     {
         private const string GetRouteName = nameof(ItemSchemaController);
 
-        public ItemSchemaController(IItemSchemaService schemaRepository, IMapper mapper) : base(schemaRepository, mapper)
+        public ItemSchemaController(IItemSchemaService schemaRepository, IMapper mapper, IValidator<ItemSchema> validator) :
+            base(schemaRepository, mapper, validator)
         {
         }
 

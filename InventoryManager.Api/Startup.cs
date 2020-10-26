@@ -1,6 +1,8 @@
 using AutoMapper;
+using FluentValidation;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
+using InventoryManager.Api.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,13 +33,16 @@ namespace InventoryManager.Api
                         builder.AllowAnyMethod();
                     });
             });
-            
+
             services.Configure<InventoryDatabaseSettings>(
                 Configuration.GetSection(nameof(InventoryDatabaseSettings)));
-            
+
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IItemSchemaService, ItemSchemaService>();
-            
+
+            services.AddTransient<IValidator<Item>, ItemValidator>();
+            services.AddTransient<IValidator<ItemSchema>, ItemSchemaValidator>();
+
             BsonClassMaps.Map();
 
             services.AddAutoMapper(typeof(Startup));

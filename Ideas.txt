@@ -3,6 +3,7 @@ Bug: If fields like "type" or "name" are added to schema, they override the base
 Validation for reserved words in item schema (name, type, schemeId)
 - Server-side validation (use fluent validation)
 - Show server side errors client side. Field related errors should appear under the respective field.
+- Use server-side validation only for now
 Don't let user delete item types if associated items exist
 Have a google style add button at the bottom right corner of screen
 Login and authentication system
