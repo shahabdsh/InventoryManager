@@ -6,6 +6,7 @@ import { Item } from "@models/item";
 import { DatePipe } from "@angular/common";
 import { timer } from "rxjs";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
 
 @Component({
   selector: "app-item-schema-card",
@@ -98,8 +99,8 @@ export class ItemSchemaCardComponent implements OnInit {
       timer(1500).subscribe(() => {
         this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
       });
-    }, error => {
-      this.footerMessage = "Error saving!";
+    }, response => {
+      applyValidationErrorsToFormGroup(response.error, this.schemaForm);
       this.changed = true;
     });
 

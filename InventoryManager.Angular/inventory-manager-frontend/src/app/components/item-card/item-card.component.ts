@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Item } from "@models/item";
-import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ItemService } from "@services/item.service";
 import { debounceTime } from "rxjs/operators";
 import { DatePipe } from "@angular/common";
 import { ItemSchemaService } from "@services/item-schema.service";
 import { ItemSchema, ItemSchemaPropertyType } from "@models/item-schema";
 import { timer } from "rxjs";
+import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
 
 @Component({
   selector: "app-item-card",
@@ -20,7 +21,6 @@ export class ItemCardComponent implements OnInit {
   schema: ItemSchema;
 
   showConfirmDelete: boolean;
-
   footerMessage: string;
 
   constructor(private fb: FormBuilder,
@@ -31,8 +31,8 @@ export class ItemCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.itemForm = this.fb.group({
-      name: [this.item.name],
-      quantity: [this.item.quantity]
+      name: [this.item.name, Validators.required],
+      quantity: [this.item.quantity, Validators.required]
     });
 
     this.itemSchemaService.allEntitiesTakeOne.subscribe(schemas => {
@@ -95,6 +95,10 @@ export class ItemCardComponent implements OnInit {
       .pipe(debounceTime(600))
       .subscribe(_ => {
 
+        if (this.itemForm.invalid) {
+          return;
+        }
+
         const obj = new Item(this.itemForm.getRawValue()) as Item;
         obj.id = this.item.id;
         obj.schemaId = this.item.schemaId;
@@ -108,6 +112,8 @@ export class ItemCardComponent implements OnInit {
           timer(1500).subscribe(() => {
             this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
           });
+        }, (res) => {
+          applyValidationErrorsToFormGroup(res.error, this.itemForm);
         });
       });
   }

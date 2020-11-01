@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using FluentValidation;
+using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -78,7 +79,7 @@ namespace InventoryManager.Api.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    return BadRequest(validationResult.Errors);
+                    return BadRequest(_mapper.Map<List<ValidationErrorDto>>(validationResult.Errors));
                 }
             }
 
@@ -101,7 +102,7 @@ namespace InventoryManager.Api.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    return BadRequest(validationResult.Errors);
+                    return BadRequest(_mapper.Map<List<ValidationErrorDto>>(validationResult.Errors));
                 }
             }
 

@@ -12,6 +12,7 @@ import { ItemSchemaCardComponent } from "@components/item-schema-card/item-schem
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ValidationErrorsComponent } from "@components/validation-errors/validation-errors.component";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     ItemCardComponent,
     AllItemsComponent,
     ItemSchemasComponent,
-    ItemSchemaCardComponent
+    ItemSchemaCardComponent,
+    ValidationErrorsComponent
   ],
   imports: [
     BrowserModule,

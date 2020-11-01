@@ -10,13 +10,17 @@
                aria-describedby="inputGroup-sizing-default"
                [ngClass]="{'is-invalid': !schemaForm.get('name').valid }"
                formControlName="name">
+        <div app-validation-errors [control]="schemaForm.get('name')" class="invalid-feedback">
+        </div>
       </div>
-      <ng-container formArrayName="properties">
+      <div formArrayName="properties" [ngClass]="{'is-invalid': !schemaForm.get('properties').valid }">
         <ng-container *ngFor="let property of properties.controls; let i=index">
           <div [formGroupName]="i" class="form-row mt-2">
               <div class="col-5">
                 <input type="text" class="form-control" formControlName="name" placeholder="Field Name"
                        [ngClass]="{'is-invalid': !property.get('name').valid }">
+                <div app-validation-errors [control]="property.get('name')" class="invalid-feedback">
+                </div>
               </div>
               <div class="col-5">
                 <select class="form-control" formControlName="type">
@@ -28,7 +32,9 @@
               </div>
           </div>
         </ng-container>
-      </ng-container>
+      </div>
+      <div app-validation-errors [control]="schemaForm.get('properties')" class="invalid-feedback">
+      </div>
       <div class="row mt-2">
         <div class="col">
           <button (click)="addNewPropertyToForm()" type="button" class="btn btn-block btn-primary">

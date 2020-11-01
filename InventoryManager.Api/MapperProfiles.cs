@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation.Results;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 
@@ -12,6 +13,9 @@ namespace InventoryManager.Api
                 .ReverseMap();
 
             CreateMap<ItemSchema, ItemSchemaDto>()
+                .ReverseMap();
+
+            CreateMap<ValidationFailure, ValidationErrorDto>()
                 .ReverseMap();
         }
     }
