@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using InventoryManager.Api.Models;
 
 namespace InventoryManager.Api.Services
 {
     public interface IRepositoryService<T> where T : EntityBase
     {
+        IQueryable<T> Queryable();
         List<T> Get();
         /// <summary>
         /// <para>Example query: "type:book;quantity-gt:5;author-ctn:name"</para>

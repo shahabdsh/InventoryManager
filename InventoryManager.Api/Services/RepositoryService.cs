@@ -22,6 +22,9 @@ namespace InventoryManager.Api.Services
             Entities = database.GetCollection<T>(EntityCollectionName);
         }
 
+        public IQueryable<T> Queryable() =>
+            Entities.AsQueryable();
+
         public List<T> Get() =>
             Entities.Find(entity => true).ToList();
 

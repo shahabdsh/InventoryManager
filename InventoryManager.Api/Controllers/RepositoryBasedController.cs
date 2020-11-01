@@ -20,21 +20,21 @@ namespace InventoryManager.Api.Controllers
         where T : EntityBase
         where U : EntityBase
     {
-        private readonly IRepositoryService<T> _repository;
+        private readonly IRepositoryService<T> _service;
         private readonly IMapper _mapper;
         private readonly IValidator<T> _validator;
 
-        public RepositoryBasedController(IRepositoryService<T> repository, IMapper mapper, IValidator<T> validator = null)
+        public RepositoryBasedController(IRepositoryService<T> service, IMapper mapper, IValidator<T> validator = null)
         {
-            _repository = repository;
+            _service = service;
             _mapper = mapper;
             _validator = validator;
         }
 
         protected ActionResult<List<U>> GetBase(string query) =>
             string.IsNullOrWhiteSpace(query) ?
-            _mapper.Map<List<U>>(_repository.Get()) :
-            _mapper.Map<List<U>>(_repository.Get(query));
+            _mapper.Map<List<U>>(_service.Get()) :
+            _mapper.Map<List<U>>(_service.Get(query));
 
         [HttpGet]
         public ActionResult<List<U>> Get([FromQuery(Name = "query")] string query)
@@ -44,8 +44,8 @@ namespace InventoryManager.Api.Controllers
 
         protected ActionResult<List<string>> GetIdsBase(string query) =>
             string.IsNullOrWhiteSpace(query) ?
-                _repository.GetIdsOnly():
-                _repository.GetIdsOnly(query);
+                _service.GetIdsOnly():
+                _service.GetIdsOnly(query);
 
         [HttpGet("ids")]
         public ActionResult<List<string>> GetIds([FromQuery(Name = "query")] string query)
@@ -55,7 +55,7 @@ namespace InventoryManager.Api.Controllers
 
         protected ActionResult<U> GetOneBase(string id)
         {
-            var entity = _repository.GetOne(id);
+            var entity = _service.GetOne(id);
 
             if (entity == null)
             {
@@ -79,11 +79,11 @@ namespace InventoryManager.Api.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    return BadRequest(_mapper.Map<List<ValidationErrorDto>>(validationResult.Errors));
+                    return BadRequest(_mapper.Map<List<FieldValidationErrorDto>>(validationResult.Errors));
                 }
             }
 
-            var created = _repository.Create(entity);
+            var created = _service.Create(entity);
 
             var newEntityDto = _mapper.Map<U>(created);
 
@@ -102,13 +102,13 @@ namespace InventoryManager.Api.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    return BadRequest(_mapper.Map<List<ValidationErrorDto>>(validationResult.Errors));
+                    return BadRequest(_mapper.Map<List<FieldValidationErrorDto>>(validationResult.Errors));
                 }
             }
 
             try
             {
-                _repository.Update(id, entity);
+                _service.Update(id, entity);
             }
             catch (InvalidOperationException ex)
             {
@@ -126,14 +126,14 @@ namespace InventoryManager.Api.Controllers
 
         protected IActionResult DeleteBase(string id)
         {
-            var entity = _repository.GetOne(id);
+            var entity = _service.GetOne(id);
 
             if (entity == null)
             {
                 return NotFound();
             }
 
-            _repository.Remove(entity.Id);
+            _service.Remove(entity.Id);
 
             return NoContent();
         }

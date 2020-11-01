@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { ItemSchema, ItemSchemaPropertyType } from "@models/item-schema";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ItemSchemaService } from "@services/item-schema.service";
@@ -15,12 +15,16 @@ import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors
 })
 export class ItemSchemaCardComponent implements OnInit {
 
+  @ViewChild("errorModal", {static: true}) errorModal;
+
   @Input() schema: ItemSchema;
   schemaForm: FormGroup;
 
   changed: boolean;
 
   footerMessage: string;
+
+  showConfirmDelete: boolean;
 
   // Todo: Automatically init this.
   itemPropertyTypesArray = [
@@ -107,10 +111,25 @@ export class ItemSchemaCardComponent implements OnInit {
     this.changed = false;
   }
 
-  showDeleteModal(content, schema: ItemSchema) {
+  attemptDelete() {
+    this.showConfirmDelete = true;
+
+    timer(2000).subscribe(() => {
+      this.showConfirmDelete = false;
+    });
+  }
+
+  delete() {
+    this.itemSchemaService.delete(this.schema.id).subscribe(() => {
+    }, error => {
+      this.showDeleteErrorModal(this.errorModal);
+    });
+  }
+
+  showDeleteErrorModal(content) {
     this.modalService.open(content, {ariaLabelledBy: "modal-basic-title"}).result.then((result) => {
-      this.itemSchemaService.delete(schema.id);
-    }, (reason) => {
+
+    }, reason => {
 
     });
   }

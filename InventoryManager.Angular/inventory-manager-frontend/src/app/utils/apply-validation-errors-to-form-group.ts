@@ -1,8 +1,8 @@
-﻿import { ValidationError } from "@models/validation-error";
+﻿import { FieldValidationError } from "@models/field-validation-error";
 import { FormGroup } from "@angular/forms";
 import { camelize } from "@utils/camelize";
 
-export function applyValidationErrorsToFormGroup(errors: ValidationError[], fg: FormGroup) {
+export function applyValidationErrorsToFormGroup(errors: FieldValidationError[], fg: FormGroup) {
 
   errors.forEach(error => {
 

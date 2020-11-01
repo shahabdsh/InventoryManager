@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using FluentValidation;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
@@ -9,11 +10,16 @@ namespace InventoryManager.Api.Controllers
 {
     public class ItemSchemaController : RepositoryBasedController<ItemSchema, ItemSchemaDto>
     {
+        private readonly IItemService _itemService;
         private const string GetRouteName = nameof(ItemSchemaController);
 
-        public ItemSchemaController(IItemSchemaService schemaRepository, IMapper mapper, IValidator<ItemSchema> validator) :
-            base(schemaRepository, mapper, validator)
+        public ItemSchemaController(IItemSchemaService schemaService,
+            IMapper mapper,
+            IValidator<ItemSchema> validator,
+            IItemService itemService) :
+            base(schemaService, mapper, validator)
         {
+            _itemService = itemService;
         }
 
         [HttpGet("{id:length(24)}", Name = GetRouteName)]
@@ -25,6 +31,20 @@ namespace InventoryManager.Api.Controllers
         public override ActionResult<ItemSchemaDto> Create(ItemSchemaDto itemDto)
         {
             return CreateBase(GetRouteName, itemDto);
+        }
+
+        public override IActionResult Delete(string id)
+        {
+            if (_itemService.Queryable().Any(item => item.SchemaId == id))
+            {
+                return BadRequest(new GenericBadRequestResponseDto
+                {
+                    Error = "itemsDependentOnSchemaExist",
+                    Description = "Can not delete this item schema because existing items depend on it."
+                });
+            }
+
+            return base.Delete(id);
         }
     }
 }

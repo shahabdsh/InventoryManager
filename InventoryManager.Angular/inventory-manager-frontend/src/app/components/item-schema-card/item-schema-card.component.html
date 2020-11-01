@@ -54,13 +54,17 @@
   </div>
   <div class="card-footer">
     <small *ngIf="footerMessage" class="text-muted">{{footerMessage}}</small>
-    <button (click)="showDeleteModal(content, schema)" type="button" class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+    <button (click)="attemptDelete()" *ngIf="!showConfirmDelete" type="button"
+            class="btn btn-secondary btn-sm float-right"><i class="far fa-trash-alt"></i></button>
+    <button (click)="delete()" *ngIf="showConfirmDelete" type="button" class="btn btn-danger btn-sm float-right">
+      Confirm
+    </button>
   </div>
 </div>
 
-<ng-template #content let-modal>
+<ng-template #errorModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Are you sure?</h4>
+    <h4 class="modal-title" id="modal-basic-title">Error</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">
         <i class="fas fa-times"></i>
@@ -68,10 +72,9 @@
     </button>
   </div>
   <div class="modal-body">
-    <p>Deleting item schema will not remove associated items but it will mark them as untyped. This action is irreversible.</p>
+    <p>Could not delete the item schema because there are items dependent on it.</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Cancel</button>
-    <button type="button" class="btn btn-outline-danger" (click)="modal.close('Save click')">Delete</button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Okay</button>
   </div>
 </ng-template>

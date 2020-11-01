@@ -1,8 +1,9 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-
-Store properties such as numbers and booleans as their real types. No more strings.
-Don't let user delete item types if associated items exist
+Easier validation
+- Automatically target input fields to set their is-invalid class
+- Automatically target forms to fill server errors when submitted
+- See if it's possible to add the errors under an input field dynamically
 Have a google style add button at the bottom right corner of screen
 Login and authentication system
 - Entity ownership

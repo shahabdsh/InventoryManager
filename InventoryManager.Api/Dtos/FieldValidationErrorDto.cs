@@ -1,6 +1,6 @@
 ﻿namespace InventoryManager.Api.Dtos
 {
-    public class ValidationErrorDto
+    public class FieldValidationErrorDto
     {
         public string PropertyName { get; set; }
         public string ErrorMessage { get; set; }
