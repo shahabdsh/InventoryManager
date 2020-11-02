@@ -1,6 +1,7 @@
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
-Easier validation
+Validation
+- Only show errors if dirty
 - Automatically target input fields to set their is-invalid class
 - Automatically target forms to fill server errors when submitted
 - See if it's possible to add the errors under an input field dynamically
