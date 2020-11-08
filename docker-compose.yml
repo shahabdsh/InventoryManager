@@ -1,0 +1,19 @@
+version: '3'
+services:
+  frontend:
+    build: ./InventoryManager.Angular/
+    image: inventory-manager-frontend
+    ports:
+      - "4200:80"
+  backend:
+    build: ./InventoryManager.Api/
+    image: inventory-manager-backend
+    ports:
+      - "4201:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+  mongo:
+    image: mongo
+    restart: always

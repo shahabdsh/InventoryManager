@@ -1,3 +1,16 @@
+##########DOCKER##########
+
+Optimize builds
+Have one dev compose and one prod compose. Use the same dockerfiles but target different stages.
+Try: Keep a separate docker image for just the npm packages
+
+Use dev mongodb snapshot
+
+Have separate folders for each technology used (angular vs .net vs etc) (maybe)
+Rename InventoryManager.Api to InventoryManager.Backend
+
+##########################
+
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
 Validation
