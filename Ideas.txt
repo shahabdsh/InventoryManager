@@ -1,6 +1,6 @@
 ##########DOCKER##########
 
-Optimize builds
+Optimize builds (look into BuildKit)
 Have one dev compose and one prod compose. Use the same dockerfiles but target different stages.
 Try: Keep a separate docker image for just the npm packages
 
