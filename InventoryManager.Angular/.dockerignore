@@ -1,16 +1,16 @@
 ﻿# compiled output
-/dist
-/tmp
-/out-tsc
+**/dist
+**/tmp
+**/out-tsc
 # Only exists if Bazel was run
-/bazel-out
+**/bazel-out
 
 # profiling files
 **/chrome-profiler-events*.json
 **/speed-measure-plugin*.json
 
 # IDEs and editors
-/.idea
+**/.idea
 **/.project
 **/.classpath
 **/.c9/
@@ -24,14 +24,14 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+**/.history/*
 
 # misc
-/.sass-cache
-/connect.lock
-/coverage
+**/.sass-cache
+**/connect.lock
+**/coverage
 **/*.log
-/typings
+**/typings
 
 # System Files
 **/.DS_Store
@@ -42,4 +42,4 @@ Dockerfile
 .dockerignore
 
 #Node modules
-/node_modules
+**/node_modules
