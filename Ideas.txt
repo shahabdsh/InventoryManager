@@ -1,16 +1,3 @@
-##########DOCKER##########
-
-Optimize builds (look into BuildKit)
-Have one dev compose and one prod compose. Use the same dockerfiles but target different stages.
-Try: Keep a separate docker image for just the npm packages
-
-Use dev mongodb snapshot
-
-Have separate folders for each technology used (angular vs .net vs etc) (maybe)
-Rename InventoryManager.Api to InventoryManager.Backend
-
-##########################
-
 Bug: If fields like "type" or "name" are added to schema, they override the base model fields
 
 Validation
@@ -45,6 +32,7 @@ Add a clear and concise feature list with pictures to read me. Pay attention to 
 Show off the following:
 - Generic typescript repository layer
 
+Potentially: Restructure repo such that each technology has it's own folder, rather than having everything under a solution
 Re-write some/all the backend using NodeJS
 Re-write some/all the frontend using React
 Build pipeline

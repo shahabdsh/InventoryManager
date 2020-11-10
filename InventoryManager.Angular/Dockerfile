@@ -1,20 +1,17 @@
-﻿FROM node:alpine as install
+﻿# Separate the npm install portion so builds take a lot less time if no npm packages were changed/added
+FROM node:alpine as install
 RUN mkdir -p /app
 WORKDIR /app
 COPY inventory-manager-frontend/package.json package.json
 RUN npm install
 
-FROM install as dev
-WORKDIR /app
-RUN npm install -g @angular/cli
-COPY inventory-manager-frontend ./
-ENTRYPOINT ["npm", "run", "start"]
-
+# Build the app using AOT compilation
 FROM install as prod-build
 WORKDIR /app
 COPY inventory-manager-frontend .
 RUN npm run build --prod
 
+# Copy the results to nginx
 FROM nginx:alpine as prod
 WORKDIR /app
 COPY nginx.conf /etc/nginx/conf.d/default.conf
