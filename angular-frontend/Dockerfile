@@ -6,13 +6,13 @@ COPY package.json package.json
 RUN npm install
 
 # Build the app using AOT compilation
-FROM install as prod-build
+FROM install as build
 WORKDIR /app
 COPY . .
-RUN npm run build --prod
+RUN npm run build -- --configuration=staging
 
 # Copy the results to nginx
-FROM nginx:alpine as prod
+FROM nginx:alpine as staging
 WORKDIR /app
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=prod-build /app/dist/inventory-manager-frontend /usr/share/nginx/html
+COPY --from=build /app/dist/inventory-manager-frontend /usr/share/nginx/html

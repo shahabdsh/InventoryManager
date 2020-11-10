@@ -58,7 +58,8 @@ namespace InventoryManager.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            if (!env.IsDevelopment())
+            // Todo: Set up HTTPS certificates in docker so you can remove this if
+            if (!env.IsStaging())
             {
                 app.UseHttpsRedirection();
             }

@@ -5,16 +5,16 @@ services:
       context: angular-frontend
     image: inventory-manager-frontend
     ports:
-      - "4200:80"
+      - "4300:80"
   api:
     # Todo: Set up HTTPS
     build:
       context: dotnet-backend
     image: inventory-manager-api
     ports:
-      - "4201:80"
+      - "4301:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Staging
       - ASPNETCORE_URLS=http://+:80
   mongo:
     image: mongo
