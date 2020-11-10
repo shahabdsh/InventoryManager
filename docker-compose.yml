@@ -2,13 +2,14 @@ version: '3'
 services:
   frontend:
     build:
-      context: InventoryManager.Angular
+      context: angular-frontend
     image: inventory-manager-frontend
     ports:
       - "4200:80"
   api:
     # Todo: Set up HTTPS
-    build: ./InventoryManager.Api/
+    build:
+      context: dotnet-backend
     image: inventory-manager-api
     ports:
       - "4201:80"

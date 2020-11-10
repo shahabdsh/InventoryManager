@@ -2,13 +2,13 @@
 FROM node:alpine as install
 RUN mkdir -p /app
 WORKDIR /app
-COPY inventory-manager-frontend/package.json package.json
+COPY package.json package.json
 RUN npm install
 
 # Build the app using AOT compilation
 FROM install as prod-build
 WORKDIR /app
-COPY inventory-manager-frontend .
+COPY . .
 RUN npm run build --prod
 
 # Copy the results to nginx
