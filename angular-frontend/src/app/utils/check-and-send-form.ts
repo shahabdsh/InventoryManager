@@ -21,6 +21,6 @@ export function checkAndSendForm (fg: FormGroup,
     if (onFailure){
       onFailure();
     }
-    applyValidationErrorsToFormGroup(res.error, this.itemForm);
+    applyValidationErrorsToFormGroup(res.error, fg);
   });
 }
