@@ -11,7 +11,7 @@ WORKDIR /app
 COPY . .
 RUN npm run build -- --configuration=staging
 
-# Copy the results to nginx
+# Copy the results to nginx. Also copy a custom nginx config in order to let angular handle routing
 FROM nginx:alpine as staging
 WORKDIR /app
 COPY nginx.conf /etc/nginx/conf.d/default.conf

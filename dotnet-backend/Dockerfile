@@ -8,7 +8,6 @@ RUN dotnet restore
 FROM restore as build
 WORKDIR /app
 COPY . .
-WORKDIR /app
 RUN dotnet publish -c Release -o out InventoryManager.Api.csproj
 
 # Run on a slimmer runtime
