@@ -7,8 +7,7 @@ import { DatePipe } from "@angular/common";
 import { ItemSchemaService } from "@services/item-schema.service";
 import { ItemSchema, ItemSchemaPropertyType } from "@models/item-schema";
 import { timer } from "rxjs";
-import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
-import { checkFormInvalidAndSignalChange } from "@utils/check-form-invalid-and-signal-change";
+import { checkAndSendForm } from "@utils/check-and-send-form";
 
 @Component({
   selector: "app-item-card",
@@ -96,24 +95,22 @@ export class ItemCardComponent implements OnInit {
       .pipe(debounceTime(600))
       .subscribe(_ => {
 
-        if (checkFormInvalidAndSignalChange(this.itemForm))
-          return;
+        checkAndSendForm(this.itemForm, () => {
 
-        const obj = new Item(this.itemForm.getRawValue()) as Item;
-        obj.id = this.item.id;
-        obj.schemaId = this.item.schemaId;
+          const obj = new Item(this.itemForm.getRawValue()) as Item;
+          obj.id = this.item.id;
+          obj.schemaId = this.item.schemaId;
 
-        obj.properties.forEach(prop => {
-          prop.value = prop.value.toString();
-        });
+          obj.properties.forEach(prop => {
+            prop.value = prop.value.toString();
+          });
 
-        this.itemsService.update(this.item.id, obj).subscribe(response => {
+          return this.itemsService.update(this.item.id, obj);
+        }, () => {
           this.footerMessage = "Saved!";
           timer(1500).subscribe(() => {
             this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
           });
-        }, (res) => {
-          applyValidationErrorsToFormGroup(res.error, this.itemForm);
         });
       });
   }

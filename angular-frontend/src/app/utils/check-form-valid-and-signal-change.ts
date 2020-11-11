@@ -1,10 +1,10 @@
 ﻿import { FormGroup } from "@angular/forms";
 
-export function checkFormInvalidAndSignalChange(fg: FormGroup) {
+export function checkFormValidAndSignalChange(fg: FormGroup) {
 
   if (!fg.valid)
     fg.patchValue(fg.value);
 
-  return !fg.valid;
+  return fg.valid;
 }
 

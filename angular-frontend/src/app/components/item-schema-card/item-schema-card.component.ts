@@ -6,8 +6,7 @@ import { Item } from "@models/item";
 import { DatePipe } from "@angular/common";
 import { timer } from "rxjs";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
-import { checkFormInvalidAndSignalChange } from "@utils/check-form-invalid-and-signal-change";
+import { checkAndSendForm } from "@utils/check-and-send-form";
 
 @Component({
   selector: "app-item-schema-card",
@@ -92,23 +91,21 @@ export class ItemSchemaCardComponent implements OnInit {
 
   save() {
 
-    if (checkFormInvalidAndSignalChange(this.schemaForm))
-      return;
+    this.changed = false;
 
-    const obj = new Item(this.schemaForm.value) as any;
-    obj.id = this.schema.id;
+    checkAndSendForm(this.schemaForm, () => {
+      const obj = new Item(this.schemaForm.value) as any;
+      obj.id = this.schema.id;
 
-    this.itemSchemaService.update(this.schema.id, obj).subscribe(result => {
+      return this.itemSchemaService.update(this.schema.id, obj);
+    }, () => {
       this.footerMessage = "Saved!";
       timer(1500).subscribe(() => {
         this.footerMessage = `Updated on: ${this.datePipe.transform(new Date(), "medium")}`;
       });
-    }, response => {
-      applyValidationErrorsToFormGroup(response.error, this.schemaForm);
+    }, () => {
       this.changed = true;
     });
-
-    this.changed = false;
   }
 
   attemptDelete() {
