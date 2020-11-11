@@ -7,6 +7,7 @@ import { DatePipe } from "@angular/common";
 import { timer } from "rxjs";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
+import { checkFormInvalidAndSignalChange } from "@utils/check-form-invalid-and-signal-change";
 
 @Component({
   selector: "app-item-schema-card",
@@ -91,9 +92,8 @@ export class ItemSchemaCardComponent implements OnInit {
 
   save() {
 
-    if (!this.schemaForm.valid) {
+    if (checkFormInvalidAndSignalChange(this.schemaForm))
       return;
-    }
 
     const obj = new Item(this.schemaForm.value) as any;
     obj.id = this.schema.id;

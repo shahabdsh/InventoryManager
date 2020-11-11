@@ -8,18 +8,18 @@
         </div>
         <input type="text" class="form-control" aria-label="Default"
                aria-describedby="inputGroup-sizing-default"
-               [ngClass]="{'is-invalid': !schemaForm.get('name').valid }"
+               [appFormControlInvalidChecker]="schemaForm.get('name')"
                formControlName="name">
-        <div app-validation-errors [control]="schemaForm.get('name')" class="invalid-feedback">
+        <div [app-validation-errors]="schemaForm.get('name')">
         </div>
       </div>
-      <div formArrayName="properties" [ngClass]="{'is-invalid': !schemaForm.get('properties').valid }">
+      <div formArrayName="properties" [appFormControlInvalidChecker]="schemaForm.get('properties')">
         <ng-container *ngFor="let property of properties.controls; let i=index">
           <div [formGroupName]="i" class="form-row mt-2">
               <div class="col-5">
                 <input type="text" class="form-control" formControlName="name" placeholder="Field Name"
-                       [ngClass]="{'is-invalid': !property.get('name').valid }">
-                <div app-validation-errors [control]="property.get('name')" class="invalid-feedback">
+                       [appFormControlInvalidChecker]="property.get('name')">
+                <div [app-validation-errors]="property.get('name')">
                 </div>
               </div>
               <div class="col-5">
@@ -33,7 +33,7 @@
           </div>
         </ng-container>
       </div>
-      <div app-validation-errors [control]="schemaForm.get('properties')" class="invalid-feedback">
+      <div [app-validation-errors]="schemaForm.get('properties')">
       </div>
       <div class="row mt-2">
         <div class="col">

@@ -13,6 +13,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ValidationErrorsComponent } from "@components/validation-errors/validation-errors.component";
+import { FormControlInvalidCheckerDirective } from './directives/form-control-invalid-checker.directive';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ValidationErrorsComponent } from "@components/validation-errors/validat
     AllItemsComponent,
     ItemSchemasComponent,
     ItemSchemaCardComponent,
-    ValidationErrorsComponent
+    ValidationErrorsComponent,
+    FormControlInvalidCheckerDirective
   ],
   imports: [
     BrowserModule,

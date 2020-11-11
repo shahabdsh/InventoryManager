@@ -8,6 +8,7 @@ import { ItemSchemaService } from "@services/item-schema.service";
 import { ItemSchema, ItemSchemaPropertyType } from "@models/item-schema";
 import { timer } from "rxjs";
 import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
+import { checkFormInvalidAndSignalChange } from "@utils/check-form-invalid-and-signal-change";
 
 @Component({
   selector: "app-item-card",
@@ -95,9 +96,8 @@ export class ItemCardComponent implements OnInit {
       .pipe(debounceTime(600))
       .subscribe(_ => {
 
-        if (this.itemForm.invalid) {
+        if (checkFormInvalidAndSignalChange(this.itemForm))
           return;
-        }
 
         const obj = new Item(this.itemForm.getRawValue()) as Item;
         obj.id = this.item.id;

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, HostBinding, Input, OnInit } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 
 @Component({
@@ -8,14 +8,16 @@ import { AbstractControl } from "@angular/forms";
 })
 export class ValidationErrorsComponent implements OnInit {
 
-  @Input() control: AbstractControl;
+  @Input("app-validation-errors") control: AbstractControl;
+
+  @HostBinding('class.invalid-feedback') invalidFeedbackClassBinding: boolean = false;
 
   defaultErrorMessages = {
     required: "Field is required"
   };
 
   constructor() {
-
+    this.invalidFeedbackClassBinding = true;
   }
 
   ngOnInit(): void {

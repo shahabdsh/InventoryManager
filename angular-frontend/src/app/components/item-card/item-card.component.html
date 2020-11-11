@@ -11,18 +11,18 @@
         <div class="input-group-prepend">
           <span class="input-group-text">Name</span>
         </div>
-        <input type="text" class="form-control" [ngClass]="{'is-invalid': !itemForm.get('name').valid}"
+        <input type="text" class="form-control" [appFormControlInvalidChecker]="itemForm.get('name')"
                formControlName="name">
-        <div app-validation-errors [control]="itemForm.get('name')" class="invalid-feedback">
+        <div [app-validation-errors]="itemForm.get('name')">
         </div>
       </div>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text">Quantity</span>
         </div>
-        <input type="number" class="form-control" [ngClass]="{'is-invalid': !itemForm.get('quantity').valid}"
+        <input type="number" class="form-control" [appFormControlInvalidChecker]="itemForm.get('quantity')"
                formControlName="quantity">
-        <div app-validation-errors [control]="itemForm.get('quantity')" class="invalid-feedback">
+        <div [app-validation-errors]="itemForm.get('quantity')">
         </div>
       </div>
       <ng-container *ngIf="properties" formArrayName="properties">
@@ -32,8 +32,8 @@
               <span class="input-group-text">{{property.value.key}}</span>
             </div>
             <input [type]="getPropertyFieldType(property.value.key)" class="form-control"
-                   [ngClass]="{'is-invalid': !property.valid}" formControlName="value">
-            <div app-validation-errors [control]="property" class="invalid-feedback">
+                   [appFormControlInvalidChecker]="property" formControlName="value">
+            <div [app-validation-errors]="property">
             </div>
           </div>
           <div *ngIf="getPropertyFieldType(property.value.key) === 'checkbox'" class="mb-3 form-check">
