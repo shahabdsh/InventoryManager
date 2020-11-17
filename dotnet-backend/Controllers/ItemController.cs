@@ -3,10 +3,12 @@ using FluentValidation;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManager.Api.Controllers
 {
+    [Authorize]
     public class ItemController : RepositoryBasedController<Item, ItemDto>
     {
         private const string GetRouteName = nameof(ItemController);

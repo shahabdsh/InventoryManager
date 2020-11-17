@@ -1,10 +1,14 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
 using InventoryManager.Api.Validators;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +43,7 @@ namespace InventoryManager.Api
 
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IItemSchemaService, ItemSchemaService>();
+            services.AddSingleton<IUserService, UserService>();
 
             services.AddTransient<IValidator<Item>, ItemValidator>();
             services.AddTransient<IValidator<ItemSchema>, ItemSchemaValidator>();
@@ -46,6 +51,36 @@ namespace InventoryManager.Api
             BsonClassMaps.Map();
 
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddAuthentication(x =>
+                {
+                    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    var key = Configuration["Authentication:Jwt:Secret"];
+
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = UserService.GenerateTokenValidationParameters(key);
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = context =>
+                        {
+                            var userService = context.HttpContext.RequestServices.GetService<IUserService>();
+
+                            var token = (context.SecurityToken as JwtSecurityToken)?.RawData;
+
+                            if (string.IsNullOrEmpty(token) || userService.IsTokenRevoked(token))
+                            {
+                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             services.AddControllers();
         }
@@ -67,6 +102,8 @@ namespace InventoryManager.Api
             app.UseRouting();
 
             app.UseCors();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
