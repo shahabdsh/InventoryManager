@@ -12,7 +12,7 @@ namespace InventoryManager.Api.Services
     {
         protected override string EntityCollectionName => "Items";
 
-        public ItemService(IOptions<InventoryDatabaseSettings> dbSettings, IOptions<RestrictedRepositoryOptions> restrictedRepoOptions)
+        public ItemService(IOptions<InventoryDatabaseSettings> dbSettings, RestrictedRepositoryOptions restrictedRepoOptions)
             : base(dbSettings, restrictedRepoOptions)
         {
         }

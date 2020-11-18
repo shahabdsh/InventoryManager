@@ -23,7 +23,7 @@ namespace InventoryManager.Api
             {
                 cm.AutoMap();
                 cm.SetIsRootClass(true);
-                cm.MapIdMember(c => c.OwnerId)
+                cm.MapMember(c => c.OwnerId)
                     .SetIdGenerator(StringObjectIdGenerator.Instance)
                     .SetSerializer(new StringSerializer(BsonType.ObjectId));
             });

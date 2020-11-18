@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace InventoryManager.Api
 {
@@ -43,18 +44,23 @@ namespace InventoryManager.Api
             services.Configure<InventoryDatabaseSettings>(
                 Configuration.GetSection(nameof(InventoryDatabaseSettings)));
 
-            services.AddOptions<RestrictedRepositoryOptions>()
-                .Configure<IHttpContextAccessor>((opt, accessor) =>
+            services.AddHttpContextAccessor();
+
+            services.AddScoped(provider =>
+            {
+                var accessor = provider.GetService<IHttpContextAccessor>();
+
+                var claim = accessor.HttpContext.User.Claims.SingleOrDefault(x => x.Type == nameof(User.Id));
+
+                return new RestrictedRepositoryOptions()
                 {
-                    var claim = accessor.HttpContext.User.Claims.SingleOrDefault(x => x.Type == nameof(User.Id));
+                    OwnerId = claim?.Value
+                };
+            });
 
-                    if (claim != null)
-                        opt.OwnerId = claim.Value;
-                });
-
-            services.AddSingleton<IItemService, ItemService>();
-            services.AddSingleton<IItemSchemaService, ItemSchemaService>();
-            services.AddSingleton<IUserService, UserService>();
+            services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<IItemSchemaService, ItemSchemaService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddTransient<IValidator<Item>, ItemValidator>();
             services.AddTransient<IValidator<ItemSchema>, ItemSchemaValidator>();
@@ -93,7 +99,28 @@ namespace InventoryManager.Api
                     };
                 });
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+            });
 
             services.AddControllers();
         }

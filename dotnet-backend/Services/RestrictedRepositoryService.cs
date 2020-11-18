@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Options;
 using Microsoft.Extensions.Options;
@@ -8,7 +9,7 @@ namespace InventoryManager.Api.Services
 {
     public abstract class RestrictedRepositoryService<T> : RepositoryService<T>, IRestrictedRepositoryService<T> where T : OwnedEntity
     {
-        private readonly IOptions<RestrictedRepositoryOptions> _restrictedRepoOptions;
+        private readonly RestrictedRepositoryOptions _restrictedRepoOptions;
 
         protected override FilterDefinition<T> BaseFilterDefinition
         {
@@ -21,12 +22,20 @@ namespace InventoryManager.Api.Services
             }
         }
 
-        public string Owner => _restrictedRepoOptions.Value.OwnerId;
+        public string Owner => _restrictedRepoOptions.OwnerId;
 
         protected RestrictedRepositoryService(IOptions<InventoryDatabaseSettings> dbSettings,
-            IOptions<RestrictedRepositoryOptions> restrictedRepoOptions) : base(dbSettings)
+            RestrictedRepositoryOptions restrictedRepoOptions) : base(dbSettings)
         {
             _restrictedRepoOptions = restrictedRepoOptions;
+        }
+
+        public override IQueryable<T> Queryable()
+        {
+            if (string.IsNullOrWhiteSpace(Owner))
+                throw new InvalidOperationException("An owner was not specified.");
+
+            return base.Queryable().Where(x => x.OwnerId == Owner);
         }
 
         public override T Create(T entity)
