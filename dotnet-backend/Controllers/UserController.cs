@@ -1,11 +1,7 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace InventoryManager.Api.Controllers
 {
@@ -25,7 +21,12 @@ namespace InventoryManager.Api.Controllers
         [HttpGet("[action]")]
         public IActionResult Guest()
         {
-            return Ok(_userService.GenerateAndAddGuestUser().Tokens[0]);
+            var token = _userService.GenerateAndAddGuestUser().Tokens[0];
+
+            return Ok(new TokenResponse
+            {
+                Token = token
+            });
         }
     }
 }
