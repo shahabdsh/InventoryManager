@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using InventoryManager.Api.Models;
+using InventoryManager.Api.Options;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace InventoryManager.Api.Services
 {
-    public class ItemService : RepositoryService<Item>, IItemService
+    public class ItemService : RestrictedRepositoryService<Item>, IItemService
     {
         protected override string EntityCollectionName => "Items";
 
-        public ItemService(IOptions<InventoryDatabaseSettings> settings) : base(settings)
+        public ItemService(IOptions<InventoryDatabaseSettings> dbSettings, IOptions<RestrictedRepositoryOptions> restrictedRepoOptions)
+            : base(dbSettings, restrictedRepoOptions)
         {
         }
 
-        protected override IFindFluent<Item, Item> SimpleQueryFilter(string query)
+        protected override FilterDefinition<Item> SimpleQueryFilter(string query)
         {
             var regex = new Regex($@"{query.Trim()}", RegexOptions.IgnoreCase);
 
@@ -23,10 +25,10 @@ namespace InventoryManager.Api.Services
             var filter = builder.Regex($"{nameof(Item.Name)}", regex) |
                          builder.Regex($"{nameof(Item.Properties)}.{nameof(ItemProperty.Value)}", regex);
 
-            return Entities.Find(filter);
+            return filter;
         }
 
-        protected override IFindFluent<Item, Item> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
+        protected override FilterDefinition<Item> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
         {
             // Todo: User can search by item type
             // Todo: Needs refactoring
@@ -105,7 +107,7 @@ namespace InventoryManager.Api.Services
                 }
             }
 
-            return Entities.Find(filter);
+            return filter;
         }
     }
 }

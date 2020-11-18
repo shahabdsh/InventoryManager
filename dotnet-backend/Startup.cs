@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
 using InventoryManager.Api.Models;
+using InventoryManager.Api.Options;
 using InventoryManager.Api.Services;
 using InventoryManager.Api.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,6 +42,15 @@ namespace InventoryManager.Api
 
             services.Configure<InventoryDatabaseSettings>(
                 Configuration.GetSection(nameof(InventoryDatabaseSettings)));
+
+            services.AddOptions<RestrictedRepositoryOptions>()
+                .Configure<IHttpContextAccessor>((opt, accessor) =>
+                {
+                    var claim = accessor.HttpContext.User.Claims.SingleOrDefault(x => x.Type == nameof(User.Id));
+
+                    if (claim != null)
+                        opt.OwnerId = claim.Value;
+                });
 
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IItemSchemaService, ItemSchemaService>();
@@ -82,6 +93,8 @@ namespace InventoryManager.Api
                     };
                 });
 
+            services.AddSwaggerGen();
+
             services.AddControllers();
         }
 
@@ -98,6 +111,12 @@ namespace InventoryManager.Api
             {
                 app.UseHttpsRedirection();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseRouting();
 

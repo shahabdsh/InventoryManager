@@ -2,7 +2,7 @@
 
 namespace InventoryManager.Api.Models
 {
-    public class ItemSchema : EntityBase
+    public class ItemSchema : OwnedEntity
     {
         public string Name { get; set; }
         public ICollection<ItemSchemaProperty> Properties { get; set; }

@@ -14,31 +14,33 @@ namespace InventoryManager.Api.Services
 
         protected abstract string EntityCollectionName { get; }
 
-        protected RepositoryService(IOptions<InventoryDatabaseSettings> settings)
+        protected virtual FilterDefinition<T> BaseFilterDefinition => Builders<T>.Filter.Empty;
+
+        protected RepositoryService(IOptions<InventoryDatabaseSettings> dbSettings)
         {
-            var client = new MongoClient(settings.Value.ConnectionString);
-            var database = client.GetDatabase(settings.Value.DatabaseName);
+            var client = new MongoClient(dbSettings.Value.ConnectionString);
+            var database = client.GetDatabase(dbSettings.Value.DatabaseName);
 
             Entities = database.GetCollection<T>(EntityCollectionName);
         }
 
-        public IQueryable<T> Queryable() =>
+        public virtual IQueryable<T> Queryable() =>
             Entities.AsQueryable();
 
-        public List<T> Get() =>
-            Entities.Find(entity => true).ToList();
+        public virtual List<T> Get() =>
+            Entities.Find(BaseFilterDefinition).ToList();
 
-        public List<T> Get(string query)
+        public virtual List<T> Get(string query)
         {
             return GetQueryInternal(query).ToList();
         }
 
-        public List<string> GetIdsOnly()
+        public virtual List<string> GetIdsOnly()
         {
             return GetIdsOnly("");
         }
 
-        public List<string> GetIdsOnly(string query)
+        public virtual List<string> GetIdsOnly(string query)
         {
             return GetQueryInternal(query).Project(entity => entity.Id).ToList();
         }
@@ -53,24 +55,29 @@ namespace InventoryManager.Api.Services
                 var filterDefs = ParseQuery(match.Groups[1].Value);
                 if (filterDefs.Count > 0)
                 {
-                    return AdvancedQueryFilter(match.Groups[1].Value, filterDefs);
+                    return Entities.Find(BaseFilterDefinition & AdvancedQueryFilter(match.Groups[1].Value, filterDefs));
                 }
             }
 
-            return SimpleQueryFilter(query.TrimStart('='));
+            return Entities.Find(BaseFilterDefinition & SimpleQueryFilter(query.TrimStart('=')));
         }
 
-        public T GetOne(string id) =>
-            Entities.Find(entity => entity.Id == id).FirstOrDefault();
+        public virtual T GetOne(string id)
+        {
+            var filter = BaseFilterDefinition & Builders<T>.Filter.Eq(nameof(EntityBase.Id), id);
 
-        public T Create(T entity)
+            return Entities.Find(filter).FirstOrDefault();
+        }
+
+
+        public virtual T Create(T entity)
         {
             entity.CreatedOn = DateTimeOffset.Now;
             Entities.InsertOne(entity);
             return entity;
         }
 
-        public void Update(string id, T entityIn)
+        public virtual void Update(string id, T entityIn)
         {
             var existing = GetOne(id);
 
@@ -85,20 +92,20 @@ namespace InventoryManager.Api.Services
             Entities.ReplaceOne(entity => entity.Id == id, entityIn);
         }
 
-        public void Remove(T entityIn) =>
+        public virtual void Remove(T entityIn) =>
             Entities.DeleteOne(entity => entity.Id == entityIn.Id);
 
-        public void Remove(string id) =>
+        public virtual void Remove(string id) =>
             Entities.DeleteOne(entity => entity.Id == id);
 
-        protected virtual IFindFluent<T, T> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
+        protected virtual FilterDefinition<T> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
         {
-            return Entities.Find(entity => true);
+            return Builders<T>.Filter.Empty;
         }
 
-        protected virtual IFindFluent<T, T> SimpleQueryFilter(string query)
+        protected virtual FilterDefinition<T> SimpleQueryFilter(string query)
         {
-            return Entities.Find(entity => true);
+            return Builders<T>.Filter.Empty;
         }
 
         private static List<BasicFilterDefinition> ParseQuery(string query)

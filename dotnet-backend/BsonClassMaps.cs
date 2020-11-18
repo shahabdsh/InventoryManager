@@ -19,6 +19,15 @@ namespace InventoryManager.Api
                     .SetSerializer(new StringSerializer(BsonType.ObjectId));
             });
 
+            BsonClassMap.RegisterClassMap<OwnedEntity>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIsRootClass(true);
+                cm.MapIdMember(c => c.OwnerId)
+                    .SetIdGenerator(StringObjectIdGenerator.Instance)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
+            });
+
             BsonClassMap.RegisterClassMap<Item>(cm =>
             {
                 cm.SetDiscriminator(nameof(Item));

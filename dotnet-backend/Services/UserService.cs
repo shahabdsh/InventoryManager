@@ -16,7 +16,7 @@ namespace InventoryManager.Api.Services
         private readonly IConfiguration _configuration;
         protected override string EntityCollectionName => "Users";
 
-        public UserService(IOptions<InventoryDatabaseSettings> settings, IConfiguration configuration) : base(settings)
+        public UserService(IOptions<InventoryDatabaseSettings> dbSettings, IConfiguration configuration) : base(dbSettings)
         {
             _configuration = configuration;
         }

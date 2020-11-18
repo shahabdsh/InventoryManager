@@ -2,7 +2,7 @@
 
 namespace InventoryManager.Api.Models
 {
-    public class Item : EntityBase
+    public class Item : OwnedEntity
     {
         public string Name { get; set; }
         public string SchemaId { get; set; }

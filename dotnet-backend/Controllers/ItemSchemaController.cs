@@ -4,10 +4,12 @@ using FluentValidation;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManager.Api.Controllers
 {
+    [Authorize]
     public class ItemSchemaController : RepositoryBasedController<ItemSchema, ItemSchemaDto>
     {
         private readonly IItemService _itemService;
@@ -28,6 +30,7 @@ namespace InventoryManager.Api.Controllers
             return GetOneBase(id);
         }
 
+        [HttpPost]
         public override ActionResult<ItemSchemaDto> Create(ItemSchemaDto itemDto)
         {
             return CreateBase(GetRouteName, itemDto);
