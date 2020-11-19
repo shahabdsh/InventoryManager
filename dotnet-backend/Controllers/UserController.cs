@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -43,6 +45,20 @@ namespace InventoryManager.Api.Controllers
             {
                 Token = token
             });
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var header = Request.Headers["Authorization"].First();
+
+            var token = header.Substring("Bearer ".Length).Trim();
+            var userId = User.Claims.Single(x => x.Type == nameof(Models.User.Id)).Value;
+
+            _userService.Logout(userId, token);
+
+            return Ok();
         }
     }
 }

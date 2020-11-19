@@ -9,5 +9,6 @@ namespace InventoryManager.Api.Services
         bool IsTokenRevoked(string token);
         string GenerateJwtTokenFor(string userId);
         Task<User> LoginOrCreateUserWithGoogle(string idToken);
+        void Logout(string userId, string token);
     }
 }

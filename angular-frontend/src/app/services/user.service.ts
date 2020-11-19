@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { Observable, Subject } from "rxjs";
+import { EMPTY, Observable, Subject } from "rxjs";
 import { shareReplay } from "rxjs/operators";
 import { environment } from "@env";
 import { TokenResponse } from "@models/token-response";
@@ -49,15 +49,27 @@ export class UserService {
     return ob;
   }
 
-  logout () {
+  logout (revokeToken = false): Observable<void> {
 
-    this.router.navigate(['login']);
+    if (revokeToken) {
+      const ob = this.httpClient.get<void>(`${this.url}/logout`)
+        .pipe(shareReplay(1));
 
-    localStorage.removeItem(UserService.TOKEN_KEY);
+      ob.subscribe(() => {
+        this.router.navigate(['login']);
+      }, () => {
 
-    this.authStatus$.next(AuthEvent.LoggedOut);
+      }, () => {
+        localStorage.removeItem(UserService.TOKEN_KEY);
+        this.authStatus$.next(AuthEvent.LoggedOut);
+      });
 
-    // Todo: revoke token in backend.
+      return ob
+    } else {
+      localStorage.removeItem(UserService.TOKEN_KEY);
+      this.authStatus$.next(AuthEvent.LoggedOut);
+      return EMPTY;
+    }
   }
 
   get token () {

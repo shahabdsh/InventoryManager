@@ -12,7 +12,7 @@
         <a class="nav-link" routerLink="item-schemas">Schemas</a>
       </li>
     </ul>
-    <button *ngIf="userService.token" (click)="userService.logout()" class="float-right btn btn-secondary">
+    <button *ngIf="userService.token" (click)="logout()" class="float-right btn btn-secondary">
       Log out
     </button>
   </div>

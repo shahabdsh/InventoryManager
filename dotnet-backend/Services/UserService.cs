@@ -102,5 +102,15 @@ namespace InventoryManager.Api.Services
                 ValidateIssuer = false,
                 ValidateAudience = false
             };
+
+        public void Logout(string userId, string token)
+        {
+            var user = GetOne(userId);
+
+            if (!user.RevokedTokens.Contains(token))
+                user.RevokedTokens.Add(token);
+
+            Update(user.Id, user);
+        }
     }
 }
