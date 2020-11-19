@@ -1,4 +1,5 @@
-﻿using InventoryManager.Api.Models;
+﻿using System.Collections.Generic;
+using InventoryManager.Api.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -41,6 +42,14 @@ namespace InventoryManager.Api
                 cm.SetDiscriminator(nameof(ItemSchema));
                 cm.AutoMap();
                 cm.SetIgnoreExtraElements(true);
+            });
+
+            BsonClassMap.RegisterClassMap<User>(cm =>
+            {
+                cm.SetDiscriminator(nameof(User));
+                cm.AutoMap();
+                cm.MapMember(c => c.RevokedTokens)
+                    .SetDefaultValue(new List<string>());
             });
         }
     }

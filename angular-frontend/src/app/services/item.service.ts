@@ -5,14 +5,15 @@ import { Item } from "@models/item";
 import { ItemSchema } from "@models/item-schema";
 import { GenericRepositoryService } from "./generic-repository.service";
 import { environment } from "@env";
+import { UserService } from "@services/user.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class ItemService extends GenericRepositoryService<Item> {
 
-  constructor(httpClient: HttpClient) {
-    super(httpClient);
+  constructor(httpClient: HttpClient, userService: UserService) {
+    super(httpClient, userService);
   }
 
   get entitiesUrl() {

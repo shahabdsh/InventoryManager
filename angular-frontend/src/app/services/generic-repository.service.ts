@@ -2,14 +2,22 @@ import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable } from "rxjs";
 import { filter, shareReplay, take } from "rxjs/operators";
 import { EntityBase } from "@models/entity-base";
+import { UserService } from "@services/user.service";
+import { AuthEvent } from "@models/auth-event";
 
 export abstract class GenericRepositoryService<T extends EntityBase> {
 
   allEntities$: BehaviorSubject<T[]>;
 
-  protected constructor(protected httpClient: HttpClient) {
+  protected constructor(protected httpClient: HttpClient, private userService: UserService) {
 
     this.allEntities$ = new BehaviorSubject<T[]>(null);
+
+    userService.authStatus$.subscribe(event => {
+      if (event === AuthEvent.LoggedOut) {
+        this.allEntities$.next(null);
+      }
+    });
   }
 
   get allEntities() {

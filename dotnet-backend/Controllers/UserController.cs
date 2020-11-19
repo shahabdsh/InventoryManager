@@ -1,4 +1,5 @@
-﻿using InventoryManager.Api.Dtos;
+﻿using System.Threading.Tasks;
+using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +22,22 @@ namespace InventoryManager.Api.Controllers
         [HttpGet("[action]")]
         public IActionResult Guest()
         {
-            var token = _userService.GenerateAndAddGuestUser().Tokens[0];
+            var user = _userService.GenerateAndAddGuestUser();
+
+            var token = _userService.GenerateJwtTokenFor(user.Id);
+
+            return Ok(new TokenResponse
+            {
+                Token = token
+            });
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Google([FromBody] LoginUsingExternalProviderRequest request)
+        {
+            var user = await _userService.LoginOrCreateUserWithGoogle(request.Token);
+
+            var token = _userService.GenerateJwtTokenFor(user.Id);
 
             return Ok(new TokenResponse
             {

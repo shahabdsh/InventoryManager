@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using Google.Apis.Auth;
 using InventoryManager.Api.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -13,6 +16,8 @@ namespace InventoryManager.Api.Services
 {
     public class UserService : RepositoryService<User>, IUserService
     {
+        private const string GoogleExternalProviderName = "Google";
+
         private readonly IConfiguration _configuration;
         protected override string EntityCollectionName => "Users";
 
@@ -23,29 +28,34 @@ namespace InventoryManager.Api.Services
 
         public User GenerateAndAddGuestUser()
         {
-            var userId = ObjectId.GenerateNewId().ToString();
 
-            var user = Create(new User
-            {
-                Id = userId,
-                Tokens = new List<string>
-                {
-                    GenerateJwtTokenFor(userId)
-                }
-            });
+            var user = Create(new User());
 
             return user;
         }
 
-        public string GenerateAndAddJwtTokenFor(string userId)
+        public async Task<User> LoginOrCreateUserWithGoogle(string idToken)
         {
-            var token = GenerateJwtTokenFor(userId);
+            var payload = await ValidateGoogleToken(idToken);
 
-            var user = GetOne(userId);
+            if (payload != null)
+            {
+                var user = Queryable().SingleOrDefault(x => x.ExternalProvider == GoogleExternalProviderName &&
+                                                  x.ExternalId == payload.Email);
 
-            user.Tokens.Add(token);
+                if (user == null)
+                {
+                    user = Create(new User
+                    {
+                        ExternalProvider = GoogleExternalProviderName,
+                        ExternalId = payload.Email
+                    });
+                }
 
-            return token;
+                return user;
+            }
+
+            throw new ArgumentException($"The given id token is invalid.");
         }
 
         public bool IsTokenRevoked(string token)
@@ -60,10 +70,10 @@ namespace InventoryManager.Api.Services
 
             var user = GetOne(userId);
 
-            return !user.Tokens.Contains(token);
+            return user == null || user.RevokedTokens.Contains(token);
         }
 
-        private string GenerateJwtTokenFor(string userId)
+        public string GenerateJwtTokenFor(string userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Authentication:Jwt:Secret"]);
@@ -74,6 +84,14 @@ namespace InventoryManager.Api.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<GoogleJsonWebSignature.Payload> ValidateGoogleToken(string idToken)
+        {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken,
+                new GoogleJsonWebSignature.ValidationSettings());
+
+            return payload;
         }
 
         public static TokenValidationParameters GenerateTokenValidationParameters(string key) =>

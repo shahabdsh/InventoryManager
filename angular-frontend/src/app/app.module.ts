@@ -16,6 +16,15 @@ import { ValidationErrorsComponent } from "@components/validation-errors/validat
 import { FormControlInvalidCheckerDirective } from './directives/form-control-invalid-checker.directive';
 import { LoginComponent } from '@pages/login/login.component';
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
+import {
+  FacebookLoginProvider,
+  GoogleLoginProvider,
+  SocialAuthServiceConfig,
+  SocialLoginModule
+} from "angularx-social-login";
+
+import { environment } from "@env";
+import { UserService } from "@services/user.service";
 
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -38,9 +47,27 @@ export const httpInterceptorProviders = [
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    SocialLoginModule
   ],
-  providers: [DatePipe, httpInterceptorProviders],
+  providers: [
+    DatePipe,
+    httpInterceptorProviders,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              environment.googleClientId
+            )
+          }
+        ]
+      } as SocialAuthServiceConfig,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

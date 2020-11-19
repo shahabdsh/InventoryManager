@@ -4,6 +4,13 @@ namespace InventoryManager.Api.Models
 {
     public class User : EntityBase
     {
-        public List<string> Tokens { get; set; }
+        public List<string> RevokedTokens { get; set; }
+        public string ExternalProvider { get; set; }
+        public string ExternalId { get; set; }
+
+        public User()
+        {
+            RevokedTokens = new List<string>();
+        }
     }
 }
