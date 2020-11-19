@@ -68,6 +68,7 @@ export class UserService {
     } else {
       localStorage.removeItem(UserService.TOKEN_KEY);
       this.authStatus$.next(AuthEvent.LoggedOut);
+      this.router.navigate(['login']);
       return EMPTY;
     }
   }

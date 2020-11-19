@@ -5,12 +5,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="all-items">Items</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="item-schemas">Schemas</a>
-      </li>
+      <ng-container *ngIf="userService.token">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="all-items">Items</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="item-schemas">Schemas</a>
+        </li>
+      </ng-container>
     </ul>
     <button *ngIf="userService.token" (click)="logout()" class="float-right btn btn-secondary">
       Log out
