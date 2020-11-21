@@ -17,6 +17,9 @@ namespace InventoryManager.Api
 
             CreateMap<ValidationFailure, FieldValidationErrorDto>()
                 .ReverseMap();
+
+            CreateMap<User, LoginResponse>()
+                .ReverseMap();
         }
     }
 }

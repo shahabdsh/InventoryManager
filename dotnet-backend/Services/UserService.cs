@@ -9,6 +9,8 @@ using InventoryManager.Api.Models;
 using InventoryManager.Api.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RandomDataGenerator.FieldOptions;
+using RandomDataGenerator.Randomizers;
 
 namespace InventoryManager.Api.Services
 {
@@ -27,8 +29,14 @@ namespace InventoryManager.Api.Services
 
         public User GenerateAndAddGuestUser()
         {
+            var firstName = RandomizerFactory.GetRandomizer(new FieldOptionsFirstName()).Generate();
+            var lastName = RandomizerFactory.GetRandomizer(new FieldOptionsLastName()).Generate();
 
-            var user = Create(new User());
+            var user = Create(new User()
+            {
+                FirstName = firstName,
+                LastName = lastName
+            });
 
             return user;
         }
@@ -47,8 +55,18 @@ namespace InventoryManager.Api.Services
                     user = Create(new User
                     {
                         ExternalProvider = GoogleExternalProviderName,
-                        ExternalId = payload.Email
+                        ExternalId = payload.Email,
+                        ProfileImageUrl = payload.Picture,
+                        FirstName = payload.GivenName,
+                        LastName = payload.FamilyName
                     });
+                }
+                else
+                {
+                    user.FirstName = payload.GivenName;
+                    user.LastName = payload.FamilyName;
+                    user.ProfileImageUrl = payload.Picture;
+                    Update(user.Id, user);
                 }
 
                 return user;

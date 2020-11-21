@@ -14,9 +14,21 @@
         </li>
       </ng-container>
     </ul>
-    <button *ngIf="userService.token" (click)="logout()" class="float-right btn btn-secondary">
-      Log out
-    </button>
+    <ul *ngIf="userService.token" class="nav navbar-nav flex-row justify-content-between ml-auto">
+      <li class="dropdown order-1">
+        <button type="button" id="dropdownMenu1" data-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle">
+          {{userService.loginResponse.firstName}} {{userService.loginResponse.lastName}}<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right mt-2">
+          <li class="px-3 py-2 img-container">
+            <img alt="Profile Picture" src="{{userService.pictureUrl}}">
+          </li>
+          <li class="px-3 py-2">
+            <button (click)="logout()" class="btn btn-secondary btn-block">Log out</button>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </nav>
 

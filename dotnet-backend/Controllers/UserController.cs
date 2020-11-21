@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using InventoryManager.Api.Dtos;
 using InventoryManager.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -13,11 +14,13 @@ namespace InventoryManager.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
         public IConfiguration Configuration { get; }
 
-        public UserController(IConfiguration configuration, IUserService userService)
+        public UserController(IConfiguration configuration, IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
             Configuration = configuration;
         }
 
@@ -28,10 +31,10 @@ namespace InventoryManager.Api.Controllers
 
             var token = _userService.GenerateJwtTokenFor(user.Id);
 
-            return Ok(new TokenResponse
-            {
-                Token = token
-            });
+            var response = _mapper.Map<LoginResponse>(user);
+            response.Token = token;
+
+            return Ok(response);
         }
 
         [HttpPost("[action]")]
@@ -41,10 +44,10 @@ namespace InventoryManager.Api.Controllers
 
             var token = _userService.GenerateJwtTokenFor(user.Id);
 
-            return Ok(new TokenResponse
-            {
-                Token = token
-            });
+            var response = _mapper.Map<LoginResponse>(user);
+            response.Token = token;
+
+            return Ok(response);
         }
 
         [HttpGet("[action]")]

@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { EMPTY, Observable, Subject } from "rxjs";
 import { shareReplay } from "rxjs/operators";
 import { environment } from "@env";
-import { TokenResponse } from "@models/token-response";
+import { LoginResponse } from "@models/login-response";
 import { Router } from "@angular/router";
 import { AuthEvent } from "@models/auth-event";
 
@@ -12,29 +12,33 @@ import { AuthEvent } from "@models/auth-event";
 })
 export class UserService {
 
-  static readonly TOKEN_KEY = "token";
+  static readonly LOCAL_STORAGE_KEY = "user";
 
   authEvents$: Subject<AuthEvent> = new Subject<AuthEvent>();
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  loginResponse: LoginResponse;
 
-  loginGuest(): Observable<TokenResponse> {
+  constructor(private httpClient: HttpClient, private router: Router) {
+    this.loginResponse = JSON.parse(localStorage.getItem(UserService.LOCAL_STORAGE_KEY));
+  }
 
-    const ob = this.httpClient.get<TokenResponse>(`${this.url}/guest`).pipe(
+  loginGuest(): Observable<LoginResponse> {
+
+    const ob = this.httpClient.get<LoginResponse>(`${this.url}/guest`).pipe(
       shareReplay(1)
     );
 
     ob.subscribe(result => {
-      localStorage.setItem(UserService.TOKEN_KEY, result.token);
+      this.saveLoginResponse(result);
       this.authEvents$.next(AuthEvent.LoggedIn);
     });
 
     return ob;
   }
 
-  loginGoogle(idToken: string): Observable<TokenResponse> {
+  loginGoogle(idToken: string): Observable<LoginResponse> {
 
-    const ob = this.httpClient.post<TokenResponse>(`${this.url}/google`,
+    const ob = this.httpClient.post<LoginResponse>(`${this.url}/google`,
       {
         token: idToken
       }).pipe(
@@ -42,7 +46,7 @@ export class UserService {
     );
 
     ob.subscribe(result => {
-      localStorage.setItem(UserService.TOKEN_KEY, result.token);
+      this.saveLoginResponse(result);
       this.authEvents$.next(AuthEvent.LoggedIn);
     });
 
@@ -60,21 +64,37 @@ export class UserService {
       }, () => {
 
       }, () => {
-        localStorage.removeItem(UserService.TOKEN_KEY);
+        this.clearLoginResponse();
         this.authEvents$.next(AuthEvent.LoggedOut);
       });
 
       return ob
     } else {
-      localStorage.removeItem(UserService.TOKEN_KEY);
+      this.clearLoginResponse();
       this.authEvents$.next(AuthEvent.LoggedOut);
       this.router.navigate(['login']);
       return EMPTY;
     }
   }
 
+  saveLoginResponse(loginResponse: LoginResponse) {
+    localStorage.setItem(UserService.LOCAL_STORAGE_KEY, JSON.stringify(loginResponse));
+    this.loginResponse = loginResponse;
+  }
+
+  clearLoginResponse () {
+    this.loginResponse = null;
+    localStorage.removeItem(UserService.LOCAL_STORAGE_KEY);
+  }
+
+  get pictureUrl () {
+    let url = this.loginResponse?.profileImageUrl;
+
+    return url ?? environment.defaultProfilePicUrl;
+  }
+
   get token () {
-    return localStorage.getItem(UserService.TOKEN_KEY);
+    return this.loginResponse?.token;
   }
 
   get url() {
