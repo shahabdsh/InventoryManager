@@ -30,4 +30,8 @@ export class ItemService extends GenericRepositoryService<Item> {
 
     return this.create(item);
   }
+
+  getClearEntitiesOnLogout(): boolean {
+    return true;
+  }
 }

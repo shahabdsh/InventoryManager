@@ -16,6 +16,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Staging
       - ASPNETCORE_URLS=http://+:80
+      - GOOGLE_CLIENT_SECRET=aSOie5rosWxLOtV-VN0J7pJq
+      - JWT_SECRET=dd4dbdca-5368-4e12-8a6a-539ac04b81bf
   mongo:
     image: mongo
     restart: always

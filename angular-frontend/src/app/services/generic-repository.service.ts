@@ -13,11 +13,13 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
 
     this.allEntities$ = new BehaviorSubject<T[]>(null);
 
-    userService.authStatus$.subscribe(event => {
-      if (event === AuthEvent.LoggedOut) {
-        this.allEntities$.next(null);
-      }
-    });
+    if (this.getClearEntitiesOnLogout()) {
+      userService.authEvents$.subscribe(event => {
+        if (event === AuthEvent.LoggedOut) {
+          this.allEntities$.next(null);
+        }
+      });
+    }
   }
 
   get allEntities() {
@@ -30,6 +32,8 @@ export abstract class GenericRepositoryService<T extends EntityBase> {
   }
 
   abstract get entitiesUrl(): string;
+
+  abstract getClearEntitiesOnLogout(): boolean;
 
   getAll(): Observable<T[]> {
 

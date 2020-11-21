@@ -9,21 +9,15 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": false,
-      "launchUrl": "api/item",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "InventoryManager.Api": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/item",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GOOGLE_CLIENT_SECRET": "aSOie5rosWxLOtV-VN0J7pJq",
+        "JWT_SECRET": "dd4dbdca-5368-4e12-8a6a-539ac04b81bf"
       }
     }
   }

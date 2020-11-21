@@ -17,4 +17,8 @@ export class ItemSchemaService extends GenericRepositoryService<ItemSchema> {
   get entitiesUrl() {
     return `${environment.apiUrl}/itemSchema`;
   }
+
+  getClearEntitiesOnLogout(): boolean {
+    return true;
+  }
 }

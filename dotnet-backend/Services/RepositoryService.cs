@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using InventoryManager.Api.Models;
+using InventoryManager.Api.Options;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -16,7 +17,7 @@ namespace InventoryManager.Api.Services
 
         protected virtual FilterDefinition<T> BaseFilterDefinition => Builders<T>.Filter.Empty;
 
-        protected RepositoryService(IOptions<InventoryDatabaseSettings> dbSettings)
+        protected RepositoryService(IOptions<InventoryDatabaseOptions> dbSettings)
         {
             var client = new MongoClient(dbSettings.Value.ConnectionString);
             var database = client.GetDatabase(dbSettings.Value.DatabaseName);
@@ -98,7 +99,7 @@ namespace InventoryManager.Api.Services
         public virtual void Remove(string id) =>
             Entities.DeleteOne(entity => entity.Id == id);
 
-        protected virtual FilterDefinition<T> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
+        protected virtual FilterDefinition<T> AdvancedQueryFilter(string query, IEnumerable<BasicFilterDefinition> filterDefs)
         {
             return Builders<T>.Filter.Empty;
         }

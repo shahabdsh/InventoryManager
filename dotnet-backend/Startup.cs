@@ -1,3 +1,4 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace InventoryManager.Api
 {
     public class Startup
     {
+        private readonly string _devAndStagingCorsPolicy = nameof(_devAndStagingCorsPolicy);
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,7 +35,7 @@ namespace InventoryManager.Api
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
+                options.AddPolicy(name: _devAndStagingCorsPolicy,
                     builder =>
                     {
                         builder.AllowAnyOrigin();
@@ -41,8 +44,11 @@ namespace InventoryManager.Api
                     });
             });
 
-            services.Configure<InventoryDatabaseSettings>(
-                Configuration.GetSection(nameof(InventoryDatabaseSettings)));
+            services.Configure<InventoryDatabaseOptions>(
+                Configuration.GetSection(nameof(InventoryDatabaseOptions)));
+
+            services.Configure<AuthOptions>(
+                Configuration.GetSection(nameof(AuthOptions)));
 
             services.AddHttpContextAccessor();
 
@@ -52,9 +58,9 @@ namespace InventoryManager.Api
 
                 var claim = accessor.HttpContext.User.Claims.SingleOrDefault(x => x.Type == nameof(User.Id));
 
-                return new RestrictedRepositoryOptions()
+                return new UserContext()
                 {
-                    OwnerId = claim?.Value
+                    UserId = claim?.Value
                 };
             });
 
@@ -75,7 +81,10 @@ namespace InventoryManager.Api
                 })
                 .AddJwtBearer(options =>
                 {
-                    var key = Configuration["Authentication:Jwt:Secret"];
+                    var key = Environment.GetEnvironmentVariable(EnvironmentVariableNames.JwtSecret);
+
+                    if (string.IsNullOrEmpty(key))
+                        throw new ArgumentException("Jwt secret is not initialized");
 
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
@@ -147,7 +156,14 @@ namespace InventoryManager.Api
 
             app.UseRouting();
 
-            app.UseCors();
+            if (env.IsDevelopment() || env.IsStaging())
+            {
+                app.UseCors(_devAndStagingCorsPolicy);
+            }
+            else
+            {
+                app.UseCors();
+            }
 
             app.UseAuthentication();
 

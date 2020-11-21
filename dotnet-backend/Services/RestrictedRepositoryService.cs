@@ -9,53 +9,58 @@ namespace InventoryManager.Api.Services
 {
     public abstract class RestrictedRepositoryService<T> : RepositoryService<T>, IRestrictedRepositoryService<T> where T : OwnedEntity
     {
-        private readonly RestrictedRepositoryOptions _restrictedRepoOptions;
+        private InvalidOperationException UserNotSpecifiedException =>
+            new InvalidOperationException("A user was not specified.");
+
+        private readonly UserContext _restrictedRepoOptions;
 
         protected override FilterDefinition<T> BaseFilterDefinition
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Owner))
-                    throw new InvalidOperationException("An owner was not specified.");
+                AssertUserSpecified();
 
-                return Builders<T>.Filter.Eq(nameof(OwnedEntity.OwnerId), Owner);
+                return Builders<T>.Filter.Eq(nameof(OwnedEntity.OwnerId), UserId);
             }
         }
 
-        public string Owner => _restrictedRepoOptions.OwnerId;
+        public string UserId => _restrictedRepoOptions.UserId;
 
-        protected RestrictedRepositoryService(IOptions<InventoryDatabaseSettings> dbSettings,
-            RestrictedRepositoryOptions restrictedRepoOptions) : base(dbSettings)
+        protected RestrictedRepositoryService(IOptions<InventoryDatabaseOptions> dbSettings,
+            UserContext restrictedRepoOptions) : base(dbSettings)
         {
             _restrictedRepoOptions = restrictedRepoOptions;
         }
 
         public override IQueryable<T> Queryable()
         {
-            if (string.IsNullOrWhiteSpace(Owner))
-                throw new InvalidOperationException("An owner was not specified.");
+            AssertUserSpecified();
 
-            return base.Queryable().Where(x => x.OwnerId == Owner);
+            return base.Queryable().Where(x => x.OwnerId == UserId);
         }
 
         public override T Create(T entity)
         {
-            if (string.IsNullOrWhiteSpace(Owner))
-                throw new InvalidOperationException("An owner was not specified.");
+            AssertUserSpecified();
 
-            entity.OwnerId = Owner;
+            entity.OwnerId = UserId;
 
             return base.Create(entity);
         }
 
         public override void Update(string id, T entityIn)
         {
-            if (string.IsNullOrWhiteSpace(Owner))
-                throw new InvalidOperationException("An owner was not specified.");
+            AssertUserSpecified();
 
-            entityIn.OwnerId = Owner;
+            entityIn.OwnerId = UserId;
 
             base.Update(id, entityIn);
+        }
+
+        private void AssertUserSpecified()
+        {
+            if (string.IsNullOrWhiteSpace(UserId))
+                throw UserNotSpecifiedException;
         }
     }
 }

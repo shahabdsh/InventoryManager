@@ -14,7 +14,7 @@ export class UserService {
 
   static readonly TOKEN_KEY = "token";
 
-  authStatus$: Subject<AuthEvent> = new Subject<AuthEvent>();
+  authEvents$: Subject<AuthEvent> = new Subject<AuthEvent>();
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -26,7 +26,7 @@ export class UserService {
 
     ob.subscribe(result => {
       localStorage.setItem(UserService.TOKEN_KEY, result.token);
-      this.authStatus$.next(AuthEvent.LoggedIn);
+      this.authEvents$.next(AuthEvent.LoggedIn);
     });
 
     return ob;
@@ -43,7 +43,7 @@ export class UserService {
 
     ob.subscribe(result => {
       localStorage.setItem(UserService.TOKEN_KEY, result.token);
-      this.authStatus$.next(AuthEvent.LoggedIn);
+      this.authEvents$.next(AuthEvent.LoggedIn);
     });
 
     return ob;
@@ -61,13 +61,13 @@ export class UserService {
 
       }, () => {
         localStorage.removeItem(UserService.TOKEN_KEY);
-        this.authStatus$.next(AuthEvent.LoggedOut);
+        this.authEvents$.next(AuthEvent.LoggedOut);
       });
 
       return ob
     } else {
       localStorage.removeItem(UserService.TOKEN_KEY);
-      this.authStatus$.next(AuthEvent.LoggedOut);
+      this.authEvents$.next(AuthEvent.LoggedOut);
       this.router.navigate(['login']);
       return EMPTY;
     }

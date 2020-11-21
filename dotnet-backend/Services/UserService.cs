@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -7,10 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
 using InventoryManager.Api.Models;
-using Microsoft.Extensions.Configuration;
+using InventoryManager.Api.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
 
 namespace InventoryManager.Api.Services
 {
@@ -18,12 +16,13 @@ namespace InventoryManager.Api.Services
     {
         private const string GoogleExternalProviderName = "Google";
 
-        private readonly IConfiguration _configuration;
+        private readonly IOptions<AuthOptions> _authOptions;
         protected override string EntityCollectionName => "Users";
 
-        public UserService(IOptions<InventoryDatabaseSettings> dbSettings, IConfiguration configuration) : base(dbSettings)
+        public UserService(IOptions<InventoryDatabaseOptions> dbSettings,
+            IOptions<AuthOptions> authOptions) : base(dbSettings)
         {
-            _configuration = configuration;
+            _authOptions = authOptions;
         }
 
         public User GenerateAndAddGuestUser()
@@ -62,7 +61,8 @@ namespace InventoryManager.Api.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var validationParams = GenerateTokenValidationParameters(_configuration["Authentication:Jwt:Secret"]);
+            var validationParams =
+                GenerateTokenValidationParameters(Environment.GetEnvironmentVariable(EnvironmentVariableNames.JwtSecret));
 
             var principal = tokenHandler.ValidateToken(token, validationParams, out var validatedToken);
 
@@ -75,12 +75,17 @@ namespace InventoryManager.Api.Services
 
         public string GenerateJwtTokenFor(string userId)
         {
+            var key = Environment.GetEnvironmentVariable(EnvironmentVariableNames.JwtSecret);
+
+            if (string.IsNullOrEmpty(key))
+                throw new ArgumentException("Google client secret is not initialized");
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Authentication:Jwt:Secret"]);
+            var keyBytes = Encoding.ASCII.GetBytes(key);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(nameof(User.Id), userId) }),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
@@ -88,8 +93,13 @@ namespace InventoryManager.Api.Services
 
         public async Task<GoogleJsonWebSignature.Payload> ValidateGoogleToken(string idToken)
         {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken,
-                new GoogleJsonWebSignature.ValidationSettings());
+            var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { _authOptions.Value.GoogleClientId }
+            };
+
+            // Todo: Research: Is this secure enough?
+            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);
 
             return payload;
         }

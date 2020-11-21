@@ -26,6 +26,8 @@ export class FormControlInvalidCheckerDirective implements OnInit, OnDestroy {
     this.control.valueChanges.subscribe(() => {
       this.invalidFeedbackClassBinding = this.control.touched && this.control.invalid;
     });
+
+    this.invalidFeedbackClassBinding = this.control.invalid;
   }
 
   ngOnDestroy(): void {

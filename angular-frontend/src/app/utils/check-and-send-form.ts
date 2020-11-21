@@ -1,6 +1,5 @@
 ﻿import { FormGroup } from "@angular/forms";
 import { Observable } from "rxjs";
-import { checkFormValidAndSignalChange } from "@utils/check-form-valid-and-signal-change";
 import { applyValidationErrorsToFormGroup } from "@utils/apply-validation-errors-to-form-group";
 
 export function checkAndSendForm (fg: FormGroup,
@@ -8,7 +7,7 @@ export function checkAndSendForm (fg: FormGroup,
                                   onSuccess: () => void,
                                   onFailure: () => void = null) {
 
-  if (!checkFormValidAndSignalChange(fg)) {
+  if (fg.invalid) {
     if (onFailure){
       onFailure();
     }

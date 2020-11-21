@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using InventoryManager.Api.Extensions;
 using InventoryManager.Api.Models;
 using InventoryManager.Api.Options;
 using Microsoft.Extensions.Options;
@@ -12,7 +13,7 @@ namespace InventoryManager.Api.Services
     {
         protected override string EntityCollectionName => "Items";
 
-        public ItemService(IOptions<InventoryDatabaseSettings> dbSettings, RestrictedRepositoryOptions restrictedRepoOptions)
+        public ItemService(IOptions<InventoryDatabaseOptions> dbSettings, UserContext restrictedRepoOptions)
             : base(dbSettings, restrictedRepoOptions)
         {
         }
@@ -28,7 +29,7 @@ namespace InventoryManager.Api.Services
             return filter;
         }
 
-        protected override FilterDefinition<Item> AdvancedQueryFilter(string query, List<BasicFilterDefinition> filterDefs)
+        protected override FilterDefinition<Item> AdvancedQueryFilter(string query, IEnumerable<BasicFilterDefinition> filterDefs)
         {
             // Todo: User can search by item type
             // Todo: Needs refactoring

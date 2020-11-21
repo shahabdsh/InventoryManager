@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 
-namespace InventoryManager.Api
+namespace InventoryManager.Api.Extensions
 {
     public static class StringExtensions
     {

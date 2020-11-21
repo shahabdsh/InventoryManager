@@ -8,8 +8,8 @@ namespace InventoryManager.Api.Services
     {
         protected override string EntityCollectionName => "ItemSchemas";
 
-        public ItemSchemaService(IOptions<InventoryDatabaseSettings> dbSettings,
-            RestrictedRepositoryOptions restrictedRepoOptions) : base(dbSettings, restrictedRepoOptions)
+        public ItemSchemaService(IOptions<InventoryDatabaseOptions> dbSettings,
+            UserContext restrictedRepoOptions) : base(dbSettings, restrictedRepoOptions)
         {
         }
     }
